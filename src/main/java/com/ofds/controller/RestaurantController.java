@@ -85,7 +85,7 @@ public class RestaurantController {
     }
 
     @DeleteMapping("/deleteRestaurant/{id}")
-    public ResponseEntity<Void> deleteRestaurant(@PathVariable Integer id) throws DataNotFoundException {
+    public ResponseEntity<Void> deleteRestaurant(@PathVariable Long id) throws DataNotFoundException {
         return restaurantService.deleteRestaurant(id);
     }
 }

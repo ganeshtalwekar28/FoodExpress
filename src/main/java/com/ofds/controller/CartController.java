@@ -22,7 +22,7 @@ public class CartController {
 
     // GET /api/carts/customer/{customerId}
     @GetMapping("/customer/{customerId}")
-    public ResponseEntity<CartDTO> getCartByCustomer(@PathVariable Integer customerId) throws DataNotFoundException {
+    public ResponseEntity<CartDTO> getCartByCustomer(@PathVariable Long customerId) throws DataNotFoundException {
         CartDTO cart = cartService.getCartByCustomerId(customerId);
         return new ResponseEntity<>(cart, HttpStatus.OK);
     }
@@ -30,9 +30,9 @@ public class CartController {
     // POST /api/carts/customer/{customerId}/restaurant/{restaurantId}/items/{menuItemId}?quantity=2
     @PostMapping("/customer/{customerId}/restaurant/{restaurantId}/items/{menuItemId}")
     public ResponseEntity<CartDTO> addItemToCart(
-            @PathVariable Integer customerId,
-            @PathVariable Integer restaurantId,
-            @PathVariable Integer menuItemId,
+            @PathVariable Long customerId,
+            @PathVariable Long restaurantId,
+            @PathVariable Long menuItemId,
             @RequestParam int quantity) throws DataNotFoundException {
         CartDTO updatedCart = cartService.addItem(customerId, restaurantId, menuItemId, quantity);
         return new ResponseEntity<>(updatedCart, HttpStatus.CREATED);
@@ -41,8 +41,8 @@ public class CartController {
     // PUT /api/carts/customer/{customerId}/items/{cartItemId}?quantity=3
     @PutMapping("/customer/{customerId}/items/{cartItemId}")
     public ResponseEntity<CartDTO> updateItemQuantity(
-            @PathVariable Integer customerId,
-            @PathVariable Integer cartItemId,
+            @PathVariable Long customerId,
+            @PathVariable Long cartItemId,
             @RequestParam int quantity) throws DataNotFoundException {
 
         CartDTO updatedCart = cartService.updateQuantity(customerId, cartItemId, quantity);
@@ -55,8 +55,8 @@ public class CartController {
     // DELETE /api/carts/customer/{customerId}/items/{cartItemId}
     @DeleteMapping("/customer/{customerId}/items/{cartItemId}")
     public ResponseEntity<CartDTO> removeItemFromCart(
-            @PathVariable Integer customerId,
-            @PathVariable Integer cartItemId) throws DataNotFoundException {
+            @PathVariable Long customerId,
+            @PathVariable Long cartItemId) throws DataNotFoundException {
         CartDTO updatedCart = cartService.updateQuantity(customerId, cartItemId, Integer.MIN_VALUE); // force removal
         if (updatedCart == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -66,7 +66,7 @@ public class CartController {
 
     // DELETE /api/carts/customer/{customerId}
     @DeleteMapping("/customer/{customerId}")
-    public ResponseEntity<Void> clearCart(@PathVariable Integer customerId) throws DataNotFoundException {
+    public ResponseEntity<Void> clearCart(@PathVariable Long customerId) throws DataNotFoundException {
         cartService.clearCart(customerId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

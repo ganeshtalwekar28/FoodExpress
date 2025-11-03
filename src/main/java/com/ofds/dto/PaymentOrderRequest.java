@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class PaymentOrderRequest {
     private Double amount; // Total amount in Rupees (from Angular form calculations)
-    private Integer customerId; 
+    private Long customerId; 
     private String receipt; // A unique identifier for the order (e.g., customerId + timestamp)
 }

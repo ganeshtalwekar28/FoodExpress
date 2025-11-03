@@ -12,7 +12,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.*;
@@ -43,22 +42,22 @@ class CartServiceTest {
     @BeforeEach
     void setup() {
         customer = new CustomerEntity();
-        customer.setId(1);
+        customer.setId(1L);
 
         restaurant = new RestaurantEntity();
-        restaurant.setId(10);
+        restaurant.setId(10L);
 
         menuItem = new MenuItemEntity();
-        menuItem.setId(100);
+        menuItem.setId(100L);
         menuItem.setPrice(50.0);
 
         cartItem = new CartItemEntity();
-        cartItem.setId(1000);
+        cartItem.setId(1000L);
         cartItem.setMenuItem(menuItem);
         cartItem.setQuantity(2);
 
         cart = new CartEntity();
-        cart.setId(500);
+        cart.setId(500L);
         cart.setCustomer(customer);
         cart.setRestaurant(restaurant);
         cart.setItems(new ArrayList<>(List.of(cartItem)));
@@ -70,22 +69,22 @@ class CartServiceTest {
 
     @Test
     void testGetCartByCustomerId() throws DataNotFoundException {
-        when(customerRepository.findById(anyInt())).thenReturn(Optional.of(customer)); // ✅ Use anyInt()
+        when(customerRepository.findById(anyLong())).thenReturn(Optional.of(customer)); // ✅ Use anyInt()
         when(cartRepository.findByCustomer(any())).thenReturn(Optional.of(cart));
         when(cartMapper.toDTO(any())).thenReturn(cartDTO);
 
-        CartDTO result = cartService.getCartByCustomerId(1);
+        CartDTO result = cartService.getCartByCustomerId(1L);
         assertNotNull(result);
-        verify(customerRepository).findById(1);
+        verify(customerRepository).findById(1L);
         verify(cartRepository).findByCustomer(customer);
     }
 
     @Test
     void testAddItem_NewCart() throws DataNotFoundException {
         // Arrange
-        when(customerRepository.findById(anyInt())).thenReturn(Optional.of(customer));
-        when(restaurantRepository.findById(anyInt())).thenReturn(Optional.of(restaurant));
-        when(menuItemRepository.findById(anyInt())).thenReturn(Optional.of(menuItem));
+        when(customerRepository.findById(anyLong())).thenReturn(Optional.of(customer));
+        when(restaurantRepository.findById(anyLong())).thenReturn(Optional.of(restaurant));
+        when(menuItemRepository.findById(anyLong())).thenReturn(Optional.of(menuItem));
         when(cartRepository.findByCustomer(any())).thenReturn(Optional.empty());
 
         CartEntity newCart = new CartEntity();
@@ -96,14 +95,14 @@ class CartServiceTest {
 
         when(cartItemRepository.save(any())).thenAnswer(invocation -> {
             CartItemEntity item = invocation.getArgument(0);
-            item.setId(999); // simulate DB-generated ID
+            item.setId(999L); // simulate DB-generated ID
             return item;
         });
 
         when(cartMapper.toDTO(any())).thenReturn(cartDTO);
 
         // Act
-        CartDTO result = cartService.addItem(1, 10, 100, 2);
+        CartDTO result = cartService.addItem(1L, 10L, 100L, 2);
 
         // Assert
         assertNotNull(result);
@@ -115,12 +114,12 @@ class CartServiceTest {
 
     @Test
     void testUpdateQuantity_Increase() throws DataNotFoundException {
-        when(customerRepository.findById(anyInt())).thenReturn(Optional.of(customer));
+        when(customerRepository.findById(anyLong())).thenReturn(Optional.of(customer));
         when(cartRepository.findByCustomer(any())).thenReturn(Optional.of(cart));
-        when(cartItemRepository.findById(anyInt())).thenReturn(Optional.of(cartItem));
+        when(cartItemRepository.findById(anyLong())).thenReturn(Optional.of(cartItem));
         when(cartMapper.toDTO(any())).thenReturn(cartDTO);
 
-        CartDTO result = cartService.updateQuantity(1, 1000, 1);
+        CartDTO result = cartService.updateQuantity(1L, 1000L, 1);
         assertNotNull(result);
         assertEquals(3, cartItem.getQuantity());
         verify(cartItemRepository).save(cartItem);
@@ -129,11 +128,11 @@ class CartServiceTest {
     @Test
     void testUpdateQuantity_RemoveItem() throws DataNotFoundException {
         cartItem.setQuantity(1); // ✅ Setup for removal
-        when(customerRepository.findById(anyInt())).thenReturn(Optional.of(customer));
+        when(customerRepository.findById(anyLong())).thenReturn(Optional.of(customer));
         when(cartRepository.findByCustomer(any())).thenReturn(Optional.of(cart));
-        when(cartItemRepository.findById(anyInt())).thenReturn(Optional.of(cartItem));
+        when(cartItemRepository.findById(anyLong())).thenReturn(Optional.of(cartItem));
 
-        CartDTO result = cartService.updateQuantity(1, 1000, -1);
+        CartDTO result = cartService.updateQuantity(1L, 1000L, -1);
         assertNull(result);
         verify(cartItemRepository).delete(cartItem);
         verify(cartRepository).delete(cart);
@@ -141,10 +140,10 @@ class CartServiceTest {
 
     @Test
     void testClearCart() throws DataNotFoundException {
-        when(customerRepository.findById(anyInt())).thenReturn(Optional.of(customer));
+        when(customerRepository.findById(anyLong())).thenReturn(Optional.of(customer));
         when(cartRepository.findByCustomer(any())).thenReturn(Optional.of(cart));
 
-        cartService.clearCart(1);
+        cartService.clearCart(1L);
         verify(cartItemRepository).deleteAll(cart.getItems());
         verify(cartRepository).delete(cart);
     }

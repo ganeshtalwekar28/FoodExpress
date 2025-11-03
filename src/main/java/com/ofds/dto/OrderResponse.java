@@ -12,5 +12,6 @@ public class OrderResponse {
     private LocalDateTime orderDate;
     private String restaurantName;
     private List<OrderItemDTO> items; 
+    private String razorpayOrderId;
     private LocalDateTime estimatedDelivery;
 }

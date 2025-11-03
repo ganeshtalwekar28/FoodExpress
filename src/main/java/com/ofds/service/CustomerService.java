@@ -1,17 +1,13 @@
 package com.ofds.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.ofds.dto.AddressDTO;
 import com.ofds.dto.CustomerDTO;
 import com.ofds.entity.CustomerEntity;
 import com.ofds.exception.NoDataFoundException;
@@ -59,7 +55,7 @@ public class CustomerService {
         return responseDTO;
     }
 
-    public CustomerDTO getCustomerById(Integer id) throws NoDataFoundException {
+    public CustomerDTO getCustomerById(Long id) throws NoDataFoundException {
         CustomerEntity entity = custRepo.findById(id)
             .orElseThrow(() -> new NoDataFoundException("Customer not found with id: " + id));
         CustomerDTO dto = modelMapper.map(entity, CustomerDTO.class);

@@ -136,7 +136,7 @@ class MenuItemRepositoryTest {
   void findAll_shouldReturnListOfItems() {
     List<MenuItemEntity> item = menuItemRepo.findAll();
     assertThat(item).isNotEmpty();
-    assertThat(item.get(0).getName()).isEqualTo("Idli");
+    assertThat(item.get(0).getName()).isEqualTo("Butter Chicken");
   }
 
   @Test

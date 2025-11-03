@@ -29,7 +29,8 @@ public class OrderMapper {
         // This line assumes a successful fetch of the Restaurant entity on the OrderEntity.
         // If the Restaurant entity is null, this will throw a NullPointerException.
         dto.setRestaurantName(entity.getRestaurant().getName()); 
-
+       
+        dto.setRazorpayOrderId(entity.getRazorpayOrderId());
         dto.setItems(entity.getItems().stream()
                 .map(this::toItemDTO)
                 .collect(Collectors.toList()));
@@ -41,7 +42,7 @@ public class OrderMapper {
         dto.setName(entity.getName());
         dto.setPrice(entity.getPrice());
         dto.setQuantity(entity.getQuantity());
-        dto.setImage_url(entity.getImage_url()); 
+        dto.setImage_url(entity.getImageUrl()); 
         return dto;
     }
 }

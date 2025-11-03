@@ -1,7 +1,6 @@
 package com.ofds.controller;
 
 import com.ofds.dto.CartDTO;
-import com.ofds.exception.DataNotFoundException;
 import com.ofds.service.CartService;
 
 import org.junit.jupiter.api.Test;
@@ -12,11 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -27,7 +26,8 @@ class CartControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @SuppressWarnings("removal")
+	@MockBean
     private CartService cartService;
 
     private CartDTO mockCartDTO() {
@@ -39,7 +39,7 @@ class CartControllerTest {
 
     @Test
     void testGetCartByCustomer() throws Exception {
-        Mockito.when(cartService.getCartByCustomerId(anyInt())).thenReturn(mockCartDTO());
+        Mockito.when(cartService.getCartByCustomerId(anyLong())).thenReturn(mockCartDTO());
 
         mockMvc.perform(get("/api/carts/customer/1"))
                .andExpect(status().isOk());
@@ -47,7 +47,7 @@ class CartControllerTest {
 
     @Test
     void testAddItemToCart() throws Exception {
-        Mockito.when(cartService.addItem(anyInt(), anyInt(), anyInt(), anyInt())).thenReturn(mockCartDTO());
+        Mockito.when(cartService.addItem(anyLong(), anyLong(), anyLong(), anyInt())).thenReturn(mockCartDTO());
 
         mockMvc.perform(post("/api/carts/customer/1/restaurant/10/items/100")
                 .param("quantity", "2"))
@@ -56,7 +56,7 @@ class CartControllerTest {
 
     @Test
     void testUpdateItemQuantity() throws Exception {
-        Mockito.when(cartService.updateQuantity(anyInt(), anyInt(), anyInt())).thenReturn(mockCartDTO());
+        Mockito.when(cartService.updateQuantity(anyLong(), anyLong(), anyInt())).thenReturn(mockCartDTO());
 
         mockMvc.perform(put("/api/carts/customer/1/items/1000")
                 .param("quantity", "3"))
@@ -65,7 +65,7 @@ class CartControllerTest {
 
     @Test
     void testUpdateItemQuantity_CartDeleted() throws Exception {
-        Mockito.when(cartService.updateQuantity(anyInt(), anyInt(), anyInt())).thenReturn(null);
+        Mockito.when(cartService.updateQuantity(anyLong(), anyLong(), anyInt())).thenReturn(null);
 
         mockMvc.perform(put("/api/carts/customer/1/items/1000")
                 .param("quantity", "-3"))
@@ -74,7 +74,7 @@ class CartControllerTest {
 
     @Test
     void testRemoveItemFromCart() throws Exception {
-        Mockito.when(cartService.updateQuantity(anyInt(), anyInt(), Mockito.eq(Integer.MIN_VALUE))).thenReturn(mockCartDTO());
+        Mockito.when(cartService.updateQuantity(anyLong(), anyLong(), Mockito.eq(Integer.MIN_VALUE))).thenReturn(mockCartDTO());
 
         mockMvc.perform(delete("/api/carts/customer/1/items/1000"))
                .andExpect(status().isOk());
@@ -82,7 +82,7 @@ class CartControllerTest {
 
     @Test
     void testRemoveItemFromCart_CartDeleted() throws Exception {
-        Mockito.when(cartService.updateQuantity(anyInt(), anyInt(), Mockito.eq(Integer.MIN_VALUE))).thenReturn(null);
+        Mockito.when(cartService.updateQuantity(anyLong(), anyLong(), Mockito.eq(Integer.MIN_VALUE))).thenReturn(null);
 
         mockMvc.perform(delete("/api/carts/customer/1/items/1000"))
                .andExpect(status().isNoContent());
@@ -90,7 +90,7 @@ class CartControllerTest {
 
     @Test
     void testClearCart() throws Exception {
-        Mockito.doNothing().when(cartService).clearCart(anyInt());
+        Mockito.doNothing().when(cartService).clearCart(anyLong());
 
         mockMvc.perform(delete("/api/carts/customer/1"))
                .andExpect(status().isNoContent());

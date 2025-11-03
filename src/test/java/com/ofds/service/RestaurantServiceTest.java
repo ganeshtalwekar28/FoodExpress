@@ -154,7 +154,7 @@ class RestaurantServiceTest {
         input.setName("Test Restaurant");
 
         RestaurantEntity saved = new RestaurantEntity();
-        saved.setId(1);
+        saved.setId(1L);
         saved.setName("Test Restaurant");
 
         when(restaurantRepo.save(input)).thenReturn(saved);
@@ -169,7 +169,7 @@ class RestaurantServiceTest {
     @Test
     void testGetAllRestaurants_success() throws DataNotFoundException {
         RestaurantEntity r1 = new RestaurantEntity();
-        r1.setId(1);
+        r1.setId(1L);
         r1.setName("R1");
 
         when(restaurantRepo.findAll()).thenReturn(List.of(r1));
@@ -190,21 +190,21 @@ class RestaurantServiceTest {
     @Test
     void testDeleteRestaurant_success() throws DataNotFoundException {
         RestaurantEntity r = new RestaurantEntity();
-        r.setId(5);
+        r.setId(5L);
 
-        when(restaurantRepo.findById(5)).thenReturn(Optional.of(r));
+        when(restaurantRepo.findById(5L)).thenReturn(Optional.of(r));
 
-        ResponseEntity<Void> response = restaurantService.deleteRestaurant(5);
+        ResponseEntity<Void> response = restaurantService.deleteRestaurant(5L);
 
         assertEquals(204, response.getStatusCodeValue());
-        verify(restaurantRepo, times(1)).deleteById(5);
+        verify(restaurantRepo, times(1)).deleteById(5L);
     }
 
     @Test
     void testDeleteRestaurant_notFound_throwsException() {
-        when(restaurantRepo.findById(99)).thenReturn(Optional.empty());
+        when(restaurantRepo.findById(99L)).thenReturn(Optional.empty());
 
-        assertThrows(DataNotFoundException.class, () -> restaurantService.deleteRestaurant(99));
+        assertThrows(DataNotFoundException.class, () -> restaurantService.deleteRestaurant(99L));
     }
 
     @Test

@@ -44,7 +44,7 @@ public class CustomerController
 	}
 
     @GetMapping("/customer/{id}")
-    public ResponseEntity<CustomerDTO> getCustomerById(@PathVariable Integer id) throws NoDataFoundException {
+    public ResponseEntity<CustomerDTO> getCustomerById(@PathVariable Long id) throws NoDataFoundException {
         CustomerDTO customer = custServiceObj.getCustomerById(id);
         return new ResponseEntity<>(customer, HttpStatus.OK);
     }

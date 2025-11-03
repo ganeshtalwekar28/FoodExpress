@@ -18,6 +18,7 @@ public class RestaurantMapper {
         dto.setName(entity.getName());
         dto.setAddress(entity.getAddress());
         dto.setRating(entity.getRating());
+        dto.setCuisine_type(entity.getCuisine_type());
         dto.setImage_url(entity.getImage_url());
 
         if (entity.getMenuItems() != null) {

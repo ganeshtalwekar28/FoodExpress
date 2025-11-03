@@ -36,13 +36,13 @@ public class MenuItemController {
 	RestaurantService restaurantService;
 
     @GetMapping("/getMenuItemsByRestaurantId/restaurant/{restaurantId}")
-    public ResponseEntity<List<MenuItemDTO>> getMenuItemsByRestaurantId(@PathVariable Integer restaurantId) throws DataNotFoundException {
+    public ResponseEntity<List<MenuItemDTO>> getMenuItemsByRestaurantId(@PathVariable Long restaurantId) throws DataNotFoundException {
         return menuItemService.getMenuItemsByRestaurantId(restaurantId);
     }
     
     @PostMapping("/createMenuItem/restaurant/{restaurantId}")
     public ResponseEntity<MenuItemDTO> createMenuItem(
-            @PathVariable Integer restaurantId,
+            @PathVariable Long restaurantId,
             @RequestBody MenuItemDTO dto) throws DataNotFoundException {
         return menuItemService.createMenuItem(restaurantId, dto);
     }
@@ -50,13 +50,13 @@ public class MenuItemController {
 
     @PutMapping("/updateMenuItem/{id}")
     public ResponseEntity<MenuItemDTO> updateMenuItem(
-            @PathVariable Integer id,
+            @PathVariable Long id,
             @RequestBody MenuItemDTO dto) throws DataNotFoundException {
         return menuItemService.updateMenuItem(id, dto);
     }
 
     @DeleteMapping("/deleteMenuItem/{id}")
-    public ResponseEntity<Void> deleteMenuItem(@PathVariable Integer id) throws DataNotFoundException {
+    public ResponseEntity<Void> deleteMenuItem(@PathVariable Long id) throws DataNotFoundException {
         return menuItemService.deleteMenuItem(id);
     }
     

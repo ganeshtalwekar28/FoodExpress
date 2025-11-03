@@ -7,9 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.ofds.entity.MenuItemEntity;
 
-public interface MenuItemRepository extends JpaRepository<MenuItemEntity, Integer> {
+public interface MenuItemRepository extends JpaRepository<MenuItemEntity, Long> {
 
-	Optional<MenuItemEntity> findById(Integer id);
+	Optional<MenuItemEntity> findById(Long id);
 	
 	List<MenuItemEntity> findByNameContainingIgnoreCase(String name);
 }

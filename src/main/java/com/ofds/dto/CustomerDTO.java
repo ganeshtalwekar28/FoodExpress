@@ -1,9 +1,6 @@
 package com.ofds.dto;
 
-
 import lombok.*;
-
-import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -11,7 +8,7 @@ import java.util.List;
 @Builder
 public class CustomerDTO {
 
-    private Integer id;
+    private Long id;
 
     private String name;
 

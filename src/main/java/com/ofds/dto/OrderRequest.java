@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class OrderRequest {
-    private Integer customerId;
+    private Long customerId;
     private Double totalAmount; // Final amount including GST/Delivery
     
     // Address and Contact from Angular form

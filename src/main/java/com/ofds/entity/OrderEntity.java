@@ -16,6 +16,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -27,7 +28,7 @@ public class OrderEntity {
     private Long id; 
 
     @Column(name = "user_id")
-    private Integer userId;
+    private Long userId;
 
     @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)
@@ -73,4 +74,7 @@ public class OrderEntity {
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItemEntity> items;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY) // LAZY is fine with FETCH JOIN
+    private List<OrderItemEntity> itemList = new ArrayList<>(); // Ensure initialization
 }

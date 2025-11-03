@@ -71,7 +71,7 @@ public class RestaurantService {
     	System.out.println("Inside Find Function");
   	RestaurantEntity newRes = restaurantRepo.findByEmailAndPassword(email, password).orElseThrow();
    	
-////    	System.out.println("Got the Restaurant:" + newRes);
+//   	System.out.println("Got the Restaurant:" + newRes);
 	return newRes;
    }
     public RestaurantEntity createRestaurant(RestaurantEntity restaurantEntity) {
@@ -86,7 +86,7 @@ public class RestaurantService {
         return restaurants;
     }
 
-    public ResponseEntity<Void> deleteRestaurant(Integer id) throws DataNotFoundException {
+    public ResponseEntity<Void> deleteRestaurant(Long id) throws DataNotFoundException {
         Optional<RestaurantEntity> optionalRestaurant = restaurantRepo.findById(id);
         if (optionalRestaurant.isEmpty()) {
             throw new DataNotFoundException("Restaurant not found with id: " + id);

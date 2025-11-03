@@ -1,13 +1,14 @@
-package com.ofds.controller;
+package com.ofds.exception;
+
+import java.util.Collections;
+import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import com.ofds.exception.DataNotFoundException;
-import com.ofds.exception.NoDataFoundException;
-import com.ofds.exception.RecordAlreadyFoundException;
+import com.ofds.dto.DeliveryAgentDTO;
 
 /**
  * This class is a Global Exception Handler for the entire application.
@@ -57,5 +58,28 @@ public class GlobalExceptionHandler {
         // It's a good practice to log the full exception for debugging purposes.
         // logger.error("An unexpected error occurred", ex);
         return new ResponseEntity<>("An unexpected error occurred. Please try again later.", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    
+    @ExceptionHandler(AgentListNotFoundException.class)
+    public ResponseEntity<List<DeliveryAgentDTO>> handleAgentListNotFound(AgentListNotFoundException ex) {
+        return new ResponseEntity<>(Collections.emptyList(), HttpStatus.OK);
+    }
+
+    @ExceptionHandler(AgentAssignmentException.class)
+    public ResponseEntity<String> orderAssignmentException(AgentAssignmentException e) {
+        String message = e.getMessage();
+        return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(OrderNotFoundException.class)
+    public ResponseEntity<String> orderNotFoundException(OrderNotFoundException e) {
+        String message = e.getMessage();
+        return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(MetricsDataNotFound.class)
+    public ResponseEntity<String> metricsDataNotFound(MetricsDataNotFound e){
+        String message = e.getMessage();
+        return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
     }
 }

@@ -9,10 +9,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MenuItemDTO {
-    private Integer id;
+    private Long id;
     private String name;
     private Double price;
     private String image_url;
-    private Integer restaurantId;
+    private Long restaurantId;
 }
 

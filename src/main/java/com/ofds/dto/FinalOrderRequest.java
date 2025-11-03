@@ -5,8 +5,8 @@ import lombok.Data;
 
 @Data
 public class FinalOrderRequest {
-    private Integer userId;
-    private Integer cartId;
+    private Long userId;
+    private Long cartId;
     
     // Delivery Details (Snapshot from form)
     private DeliveryAddress deliveryAddress;

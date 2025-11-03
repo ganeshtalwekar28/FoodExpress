@@ -300,8 +300,8 @@ public class CartService {
     
 
 
-    public CartDTO getCartByCustomerId(Integer customerId) throws DataNotFoundException {
-        CustomerEntity customer = customerRepository.findById(customerId)
+    public CartDTO getCartByCustomerId(Long i) throws DataNotFoundException {
+        CustomerEntity customer = customerRepository.findById(i)
                 .orElseThrow(() -> new DataNotFoundException("Customer not found"));
 
         CartEntity cart = cartRepository.findByCustomer(customer)
@@ -310,7 +310,7 @@ public class CartService {
         return cartMapper.toDTO(cart);
     }
 
-    public CartDTO addItem(Integer customerId, Integer restaurantId, Integer menuItemId, int quantity) throws DataNotFoundException {
+    public CartDTO addItem(Long customerId, Long restaurantId, Long menuItemId, int quantity) throws DataNotFoundException {
         CustomerEntity customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new DataNotFoundException("Customer not found"));
 
@@ -361,7 +361,7 @@ public class CartService {
         return cartMapper.toDTO(cart);
     }
 
-    public CartDTO updateQuantity(Integer customerId, Integer cartItemId, int quantityDelta) throws DataNotFoundException {
+    public CartDTO updateQuantity(Long customerId, Long cartItemId, int quantityDelta) throws DataNotFoundException {
         CustomerEntity customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new DataNotFoundException("Customer not found"));
 
@@ -397,11 +397,11 @@ public class CartService {
         return cartMapper.toDTO(cart);
     }
 
-    public CartDTO removeItem(Integer customerId, Integer cartItemId) throws DataNotFoundException {
+    public CartDTO removeItem(Long customerId, Long cartItemId) throws DataNotFoundException {
         return updateQuantity(customerId, cartItemId, -Integer.MAX_VALUE);
     }
 
-    public void clearCart(Integer customerId) throws DataNotFoundException {
+    public void clearCart(Long customerId) throws DataNotFoundException {
         CustomerEntity customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new DataNotFoundException("Customer not found"));
 

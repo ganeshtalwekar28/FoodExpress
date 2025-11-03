@@ -32,16 +32,13 @@ public class MenuItemService {
 
 	@Autowired
 	ModelMapper modelMapper;
-    
 
 	//Display Menu Items For restaurant
-	public ResponseEntity<List<MenuItemDTO>> getMenuItemsByRestaurantId(Integer restaurantId) throws DataNotFoundException {
+	public ResponseEntity<List<MenuItemDTO>> getMenuItemsByRestaurantId(Long restaurantId) throws DataNotFoundException {
 		Optional<RestaurantEntity> restaurantOpt = restaurantRepository.findById(restaurantId);
 	    if (restaurantOpt.isEmpty()) {
-	    		        throw new DataNotFoundException("Restaurant not found with id: " + restaurantId);
-	    		    }
-	    else {
-	    	
+	    	throw new DataNotFoundException("Restaurant not found with id: " + restaurantId);
+	    } else {
 	    	List<MenuItemEntity> listEntity = restaurantOpt.get().getMenuItems();
          	List<MenuItemDTO> dtolst = listEntity.stream()
 	    		    .map(itemEntity -> modelMapper.map(itemEntity, MenuItemDTO.class))
@@ -49,12 +46,10 @@ public class MenuItemService {
 
 	 	    return new ResponseEntity<>(dtolst, HttpStatus.OK);
 	    }
-
-	   
 	}
 	
 	//Add new Item
-    public ResponseEntity<MenuItemDTO> createMenuItem(Integer restaurantId, MenuItemDTO dto) throws DataNotFoundException {
+    public ResponseEntity<MenuItemDTO> createMenuItem(Long restaurantId, MenuItemDTO dto) throws DataNotFoundException {
         Optional<RestaurantEntity> restaurantOpt = restaurantRepository.findById(restaurantId);
         if (restaurantOpt.isEmpty()) {
             throw new DataNotFoundException("Restaurant not found with id: " + restaurantId);
@@ -75,7 +70,7 @@ public class MenuItemService {
     }
 
     //Update Existing Item
-    public ResponseEntity<MenuItemDTO> updateMenuItem(Integer id, MenuItemDTO dto) throws DataNotFoundException {
+    public ResponseEntity<MenuItemDTO> updateMenuItem(Long id, MenuItemDTO dto) throws DataNotFoundException {
         Optional<MenuItemEntity> itemOpt = menuItemRepository.findById(id);
         if (itemOpt.isEmpty()) {
             throw new DataNotFoundException("Menu item not found with id: " + id);
@@ -93,9 +88,8 @@ public class MenuItemService {
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
-    
     //delete operation
-    public ResponseEntity<Void> deleteMenuItem(Integer id) throws DataNotFoundException {
+    public ResponseEntity<Void> deleteMenuItem(Long id) throws DataNotFoundException {
         Optional<MenuItemEntity> itemOpt = menuItemRepository.findById(id);
         if (itemOpt.isEmpty()) {
             throw new DataNotFoundException("Menu item not found with id: " + id);
@@ -128,6 +122,5 @@ public class MenuItemService {
             .toList();
 
         return new ResponseEntity<>(dtolst, HttpStatus.OK);
-    }
-    
+    }  
 }
