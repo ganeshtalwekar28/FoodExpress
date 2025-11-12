@@ -4,9 +4,12 @@ import lombok.Data;
 
 import java.util.List;
 
+/**
+ * DTO used to represent the customer's shopping cart, including total summary and a list of items inside it.
+ */
 @Data
 public class CartDTO {
-    private Long cartId; // Change the return type back to Integer if any issue occur.
+    private Long cartId; 
     private Long id;
     private Long restaurantId;
     private String restaurantName;

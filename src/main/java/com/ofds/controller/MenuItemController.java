@@ -35,11 +35,17 @@ public class MenuItemController {
 	@Autowired
 	RestaurantService restaurantService;
 
+    /**
+     * Retrieves all menu items belonging to a specific restaurant ID.
+     */
     @GetMapping("/getMenuItemsByRestaurantId/restaurant/{restaurantId}")
     public ResponseEntity<List<MenuItemDTO>> getMenuItemsByRestaurantId(@PathVariable Long restaurantId) throws DataNotFoundException {
         return menuItemService.getMenuItemsByRestaurantId(restaurantId);
     }
     
+    /**
+     * Creates and adds a new menu item to a specified restaurant's menu.
+     */
     @PostMapping("/createMenuItem/restaurant/{restaurantId}")
     public ResponseEntity<MenuItemDTO> createMenuItem(
             @PathVariable Long restaurantId,
@@ -47,7 +53,9 @@ public class MenuItemController {
         return menuItemService.createMenuItem(restaurantId, dto);
     }
     
-
+    /**
+     * Updates the details of an existing menu item using its ID.
+     */
     @PutMapping("/updateMenuItem/{id}")
     public ResponseEntity<MenuItemDTO> updateMenuItem(
             @PathVariable Long id,
@@ -55,16 +63,19 @@ public class MenuItemController {
         return menuItemService.updateMenuItem(id, dto);
     }
 
+    /**
+     * Removes a menu item from the system using its ID.
+     */
     @DeleteMapping("/deleteMenuItem/{id}")
     public ResponseEntity<Void> deleteMenuItem(@PathVariable Long id) throws DataNotFoundException {
         return menuItemService.deleteMenuItem(id);
     }
     
+    /**
+     * Searches for menu items whose names match the given query string.
+     */
     @GetMapping("/search") 
     public ResponseEntity<List<MenuItemDTO>> searchMenuItemsByName(@RequestParam String query) throws DataNotFoundException {
         return menuItemService.searchMenuItemsByName(query);
     }
-    
-
-
 }

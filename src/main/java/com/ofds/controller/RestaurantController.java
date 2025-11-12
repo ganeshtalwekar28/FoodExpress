@@ -21,39 +21,6 @@ import com.ofds.service.RestaurantService;
 
 import lombok.RequiredArgsConstructor;
 
-//@RestController
-//@RequestMapping("/api/restaurants")
-//@RequiredArgsConstructor
-//@CrossOrigin(origins = "http://localhost:4200")
-//public class RestaurantController {
-//
-//	@Autowired
-//	RestaurantService restaurantService;
-//
-//	@GetMapping("/getAllRestaurants")
-//	public ResponseEntity<List<RestaurantEntity>> getAllRestaurants() throws DataNotFoundException {
-//		return restaurantService.getAllRestaurants();
-//	}
-//
-//	@GetMapping("/{email}/{password}")
-//	public ResponseEntity<RestaurantEntity> getRestaurantByEmailAndPassword(@PathVariable String email,
-//			@PathVariable String password) {
-//		return ResponseEntity.ok(restaurantService.findByEmailAndPassword(email, password));
-//	}
-//
-//	@PostMapping("/createRestaurant")
-//	public ResponseEntity<RestaurantEntity> createRestaurant(@RequestBody RestaurantEntity restaurantEntity) {
-//		return restaurantService.createRestaurant(restaurantEntity);
-//	}
-//
-//	@DeleteMapping("/deleteRestaurant/{id}")
-//	public ResponseEntity<Void> deleteRestaurant(@PathVariable Integer id) throws DataNotFoundException {
-//		return restaurantService.deleteRestaurant(id);
-//	}
-//
-//}
-
-
 @RestController
 @RequestMapping("/api/auth/restaurants")
 @RequiredArgsConstructor
@@ -63,6 +30,9 @@ public class RestaurantController {
     private final RestaurantService restaurantService;
     private final RestaurantMapper restaurantMapper;
 
+    /**
+     * Retrieves a list of all restaurant profiles available in the system.
+     */
     @GetMapping("/getAllRestaurants")
     public ResponseEntity<List<RestaurantDTO>> getAllRestaurants() throws DataNotFoundException {
         List<RestaurantEntity> entities = restaurantService.getAllRestaurants();
@@ -72,18 +42,27 @@ public class RestaurantController {
         return ResponseEntity.ok(dtos);
     }
 
+    /**
+     * Attempts to find a restaurant for login using their email and password combination.
+     */
     @GetMapping("/{email}/{password}")
     public ResponseEntity<RestaurantEntity> getRestaurantByEmailAndPassword(@PathVariable String email,
-                                                                            @PathVariable String password) {
+                                                                            @PathVariable String password) throws DataNotFoundException {
         return ResponseEntity.ok(restaurantService.findByEmailAndPassword(email, password));
     }
 
+    /**
+     * Creates and saves a new restaurant entry in the database.
+     */
     @PostMapping("/createRestaurant")
     public ResponseEntity<RestaurantEntity> createRestaurant(@RequestBody RestaurantEntity restaurantEntity) {
         RestaurantEntity saved = restaurantService.createRestaurant(restaurantEntity);
         return new ResponseEntity<>(saved, HttpStatus.CREATED);
     }
 
+    /**
+     * Deletes a restaurant profile from the system using its unique ID.
+     */
     @DeleteMapping("/deleteRestaurant/{id}")
     public ResponseEntity<Void> deleteRestaurant(@PathVariable Long id) throws DataNotFoundException {
         return restaurantService.deleteRestaurant(id);

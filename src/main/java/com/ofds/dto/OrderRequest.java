@@ -2,16 +2,18 @@ package com.ofds.dto;
 
 import lombok.Data;
 
+/**
+ * DTO used by the client to send the final order data, including customer details, total amount, 
+ * delivery address, and Razorpay payment confirmation.
+ */
 @Data
 public class OrderRequest {
     private Long customerId;
-    private Double totalAmount; // Final amount including GST/Delivery
+    private Double totalAmount;
     
-    // Address and Contact from Angular form
     private String deliveryAddress; 
 
 
-    // Razorpay Details from the Angular handler response
     private String razorpayOrderId; 
     private String razorpayPaymentId;
     private String razorpaySignature;

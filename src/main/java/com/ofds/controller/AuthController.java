@@ -1,5 +1,3 @@
-
-
 package com.ofds.controller;
 
 import java.util.HashMap;
@@ -24,7 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @CrossOrigin(origins = "http://localhost:4200")
 public class AuthController {
 
-    private final CustomerService customUserDetailsService;
+	private final CustomerService customerUserDetailsService;
     private final AuthenticationManager authManager;
     private final JwtUtils jwtUtils;
     private final PasswordEncoder passwordEncoder;
@@ -38,15 +36,16 @@ public class AuthController {
         PasswordEncoder passwordEncoder,
         CustomerRepository custRepo
     ) {
-        this.customUserDetailsService = customUserDetailsService;
+        this.customerUserDetailsService = customUserDetailsService;
         this.authManager = authManager;
         this.jwtUtils = jwtUtils;
         this.passwordEncoder = passwordEncoder;
         this.custRepo = custRepo;
     }
 
-  
-
+    /**
+     * Handles user login by authenticating credentials and generating a JWT token.
+     */
     @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> login(@RequestBody AuthRequest request) {
         System.out.println("Inside login()...");
@@ -70,6 +69,9 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * Registers a new customer by checking for existing email and encoding the password before saving.
+     */
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody AuthRequest request) {
         if (custRepo.findByEmail(request.getEmail()).isPresent()) {
@@ -88,46 +90,10 @@ public class AuthController {
 
         return ResponseEntity.ok("User registered successfully");
     }
-    
-    /*
-     The email is used to identify the user via JWT.
 
-Changing the email means the JWT will become outdated (since it was issued for the old email).
-
-You must validate that the new email isn’t already taken.
+    /**
+     * Updates the details (name, phone, email, password) of the currently authenticated customer.
      */
-    
-//    
-//    @PutMapping("/update")
-//    public ResponseEntity<String> updateCustomer(@RequestHeader("Authorization") String token, @RequestBody AuthRequest request) {
-//        // Extract email from JWT
-//        String email = jwtUtils.extractUsername(token.replace("Bearer ", ""));
-//
-//        CustomerEntity existingUser = custRepo.findByEmail(email).orElse(null);
-//        if (existingUser == null) {
-//            return ResponseEntity.status(404).body("User not found");
-//        }
-//
-//        // Update fields if provided
-//        if (request.getName() != null && !request.getName().isBlank()) 
-//        {
-//            existingUser.setName(request.getName());
-//        }
-//        if (request.getPhone() != null && !request.getPhone().isBlank()) 
-//        {
-//            existingUser.setPhone(request.getPhone());
-//        }
-//        
-//        if (request.getPassword() != null && !request.getPassword().isBlank()) 
-//        {
-//            String encodedPassword = passwordEncoder.encode(request.getPassword());
-//            existingUser.setPassword(encodedPassword);
-//        }
-//
-//        custRepo.save(existingUser);
-//        return ResponseEntity.ok("User updated successfully");
-//    }
-
     @PutMapping("/update")
     public ResponseEntity<String> updateCustomer(@RequestHeader("Authorization") String token, @RequestBody AuthRequest request) {
         // Extract current email from JWT
@@ -165,8 +131,6 @@ You must validate that the new email isn’t already taken.
         if (!currentEmail.equals(existingUser.getEmail())) {
             return ResponseEntity.ok("Email updated successfully. Please log in again with your new email.");
         }
-
         return ResponseEntity.ok("User updated successfully");
     }
-
 }

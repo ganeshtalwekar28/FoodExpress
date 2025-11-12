@@ -23,38 +23,36 @@ import jakarta.validation.Valid;
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping ("/api/auth")
-public class CustomerController 
-{
-
+public class CustomerController {
 	@Autowired
 	CustomerService custServiceObj;
 
+    /**
+     * Retrieves a list of all customer records from the system.
+     */
     @GetMapping("/getCustomerData")
     public ResponseEntity<List<CustomerDTO>> getCustomerData() throws NoDataFoundException 
     {
         List<CustomerDTO> customers = custServiceObj.getCustomerData();
         return new ResponseEntity<>(customers, HttpStatus.OK);
     }
-    
-//    for testing in postman:
-    @GetMapping ("/hello")
-	public String hello() {
-		System.out.println("Inside hello() of MyController...");
-		return "Hello, you are an authenticated user..";
-	}
 
+    /**
+     * Retrieves the details of a single customer using their unique ID.
+     */
     @GetMapping("/customer/{id}")
     public ResponseEntity<CustomerDTO> getCustomerById(@PathVariable Long id) throws NoDataFoundException {
         CustomerDTO customer = custServiceObj.getCustomerById(id);
         return new ResponseEntity<>(customer, HttpStatus.OK);
     }
 
+    /**
+     * Inserts a new customer record into the database.
+     */
     @PostMapping("/insertCustomerData")
     public ResponseEntity<CustomerDTO> insertCustomerData(@Valid @RequestBody CustomerDTO customerObj) throws RecordAlreadyFoundException 
     {
         CustomerDTO customer = custServiceObj.insertCustomerData(customerObj);
         return new ResponseEntity<>(customer, HttpStatus.CREATED);
     }
-    
 }
-

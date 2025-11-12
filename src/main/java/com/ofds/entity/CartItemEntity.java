@@ -7,6 +7,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Represents a specific item and its quantity stored within a customer's shopping cart.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

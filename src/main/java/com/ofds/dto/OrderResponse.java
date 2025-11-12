@@ -4,6 +4,9 @@ import lombok.Data;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * DTO used by the server to send confirmation details back to the client after a new order has been successfully placed.
+ */
 @Data
 public class OrderResponse {
     private Long orderId; 

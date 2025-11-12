@@ -8,17 +8,14 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
 /**
- * Data Transfer Object (DTO) used to present a summary of an order in the order list view.
- * Fields are designed for direct consumption by the Angular front-end list model.
+ * DTO used to present a summarized view of an order for display in lists on the admin or customer dashboards.
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderSummaryDTO {
 
-    // Unique ID of the order (matches entity ID)
     private Long id;
-    // Redundant ID field for Angular compatibility
     private Long orderID;
 
     private String status;
@@ -28,15 +25,10 @@ public class OrderSummaryDTO {
     private String customerName;
     private String dropAddress;
 
-    // List of simplified items (OrderItemDTO) in the order
     private List<OrderItemDTO> items;
 
-    // Count of unique line items in the order
     private Integer totalItems;
-
     private Double totalAmount;
-
     private LocalDateTime orderDate;
-
     private String agentName;
 }

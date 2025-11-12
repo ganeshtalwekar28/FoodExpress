@@ -38,8 +38,9 @@ public class OrdersController {
     @Autowired
     private OrdersService ordersService; 
 
-    // 1. FINAL ORDER PLACEMENT
-    // Endpoint: POST /api/auth/orders/place
+    /**
+     * Finalizes the shopping cart and initiates a new food delivery order.
+     */
     @PostMapping("/place")
     public ResponseEntity<OrderResponse> placeOrder(@RequestBody OrderRequest orderRequest) {
         try {
@@ -58,12 +59,12 @@ public class OrdersController {
         }
     }
     
-    // 2. FETCH USER HISTORY
-    // Endpoint: GET /api/auth/orders/user/{userID}
+    /**
+     * Retrieves the complete history of orders placed by a specific customer ID.
+     */
     @GetMapping("/user/{userID}")
     public ResponseEntity<List<OrderResponse>> getOrdersByUser(@PathVariable Long userID) {
         try {
-            // NOTE: You need to implement getOrdersHistory in OrdersService
             List<OrderResponse> orders = ordersService.getOrdersHistory(userID);
             
             if (orders.isEmpty()) {
@@ -80,15 +81,9 @@ public class OrdersController {
         }
     }
     
-	// ---------------------------------------------
-    // GET ALL ORDERS (List View)
-    // ---------------------------------------------
-    
-    /**
-     * Fetches a summary list of all orders for the administration list view.
-     *
-     * @return A ResponseEntity containing a list of OrderSummaryDTOs.
-     */
+	/**
+	 * Retrieves a summarized list of all orders currently in the system for the admin dashboard.
+	 */
     @GetMapping("/admin")
     public ResponseEntity<List<OrderSummaryDTO>> getAllOrders() throws OrderNotFoundException { 
         List<OrderSummaryDTO> orders = ordersService.findAllOrders();
@@ -99,15 +94,9 @@ public class OrdersController {
         }
     }
 
-    // ---------------------------------------------
-    // FETCH SINGLE ORDER DETAILS
-    // ---------------------------------------------
-    
+   
     /**
-     * Fetches detailed information for a single order.
-     *
-     * @param orderId The ID of the order.
-     * @return A ResponseEntity containing the OrdersDetailsDTO.
+     * Retrieves the detailed information (items, prices, status) for a single order ID.
      */
     @GetMapping("/admin/{orderId}")
     public ResponseEntity<OrderDetailsDTO> getOrderDetails(@PathVariable Long orderId) throws OrderNotFoundException {
@@ -119,14 +108,8 @@ public class OrdersController {
         }
     }
 
-    // ---------------------------------------------
-    // FETCH AVAILABLE AGENTS
-    // ---------------------------------------------
-    
     /**
-     * Fetches a list of all currently AVAILABLE delivery agents.
-     *
-     * @return A ResponseEntity containing a list of DeliveryAgentDTOs.
+     * Gets a list of delivery agents who are currently marked as available to take new orders.
      */
     @GetMapping("/admin/agents/available")
     public ResponseEntity<List<DeliveryAgentDTO>> getAvailableDeliveryAgents() throws AgentListNotFoundException {
@@ -138,21 +121,12 @@ public class OrdersController {
         }
     }
     
-    // ---------------------------------------------
-    // ASSIGN AGENT TO ORDER
-    // ---------------------------------------------
     
     /**
-     * Assigns a delivery agent to an order and updates both entities' statuses.
-     *
-     * @param request DTO containing orderId and agentId.
-     * @return A map containing the updated agent's name.
+     * Manually assigns a specific delivery agent to an unassigned order.
      */
     @PutMapping("/admin/assign")
     public ResponseEntity<Map<String, String>> assignAgentToOrder(@RequestBody AgentAssignmentRequestDTO request) throws AgentAssignmentException {
-        // NOTE: The DTO uses Long, but JSON sends Integer. 
-        // If ClassCastException persists, change DTO fields to Integer and convert to Long in the service layer.
-        // Assuming your service layer handles the AgentAssignmentException and returns a valid OrderEntity.
         OrderEntity updatedOrder = ordersService.assignAgent(request.getOrderId(), request.getAgentId());
         
         // Prepare response with the newly assigned agent's name for UI feedback
@@ -163,32 +137,21 @@ public class OrdersController {
             response.put("agentName", updatedOrder.getAgent().getName()); 
             return ResponseEntity.ok(response);
         } else {
-        	// This exception should cover the case where updatedOrder is null 
-            // or the agent wasn't properly assigned/fetched.
         	throw new AgentAssignmentException("Failed to assign Agent ID " + request.getAgentId() + " to Order ID " + request.getOrderId() + ". Assignment failed or returned null data.");
         }
     }
      
-    // ---------------------------------------------
-    // MARK ORDER AS DELIVERED (FIXED ClassCastException)
-    // ---------------------------------------------
-    
+   
     /**
-     * Marks a specific order as DELIVERED and updates the delivering agent's statistics/status.
-     *
-     * @param orderId The ID of the order to mark as delivered.
-     * @param payload Map containing the 'agentId' (sent by Angular).
-     * @return A map containing the updated order status and agent status.
+     * Marks a specific order as delivered, updates the order status, and handles agent updates.
      */
     @PutMapping("/admin/{orderId}/deliver")
     public ResponseEntity<Map<String, Object>> markOrderAsDelivered(@PathVariable Long orderId, 
                                                                     @RequestBody Map<String, Object> payload) throws OrderNotFoundException {
         
-    	// FIX: Explicitly retrieve as Integer and convert to Long to prevent ClassCastException
     	Integer agentIdInt = (Integer) payload.get("agentId");
         Long agentId = agentIdInt != null ? agentIdInt.longValue() : null;
         
-        // Service handles status change, earnings calculation, and agent availability update
         OrderEntity updatedOrder = ordersService.deliverOrder(orderId, agentId);
 
         // Handle Null Case

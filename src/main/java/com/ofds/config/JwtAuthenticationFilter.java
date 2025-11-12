@@ -1,15 +1,11 @@
 package com.ofds.config;
 
-
-
 import java.io.IOException;
 
-import org.hibernate.validator.internal.util.stereotypes.Lazy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -44,14 +40,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
 	JwtUtils jwtUtils;
 	
 	@Autowired
-	
 	CustomerService userDetailsService;
 	
 	@Autowired
 	CustomerUserDetailsService authCustService;
 	
-
-
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
@@ -93,7 +86,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
  		 
 		 }
 		 
-		 
 	 }
 	 //Forwards the request to the next chain of request, after authentication or not authentication.
 	 //If Authenticate, moves the control to the next action or next request or the request which it came for.
@@ -107,7 +99,4 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
 	    String path = request.getServletPath();
 	    return path.startsWith("/auth/login") || path.startsWith("/auth/register");
 	}
-
-
 }
-

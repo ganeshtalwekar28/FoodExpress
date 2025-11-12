@@ -6,34 +6,26 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
 /**
- * Data Transfer Object (DTO) for conveying complete, detailed information for a single order.
- * It combines core order details, item list, customer/restaurant addresses, and a list of
- * available agents for assignment.
+ * DTO used to transfer the complete, detailed view of a specific order, including customer, restaurant,
+ * item details, and the assigned agent's name.
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderDetailsDTO {
 
-    // --- Order Core Details ---
     private Long orderId;
     private String orderStatus;
     private Double totalAmount;
 
-    // --- Customer Details ---
     private String customerName;
-    private String customerAddress; // Used for drop address
+    private String customerAddress;
 
-    // --- Restaurant Details ---
     private String restaurantName;
-    private String restaurantAddress; // Used for pickup address
-
-    // --- Order Items ---
+    private String restaurantAddress; 
+    
     private List<OrderItemDTO> items;
 
-    // --- Agent Assignment Info ---
     private List<DeliveryAgentDTO> availableAgents;
-
-    // Assigned agent details
     private String agentName;
 }

@@ -16,7 +16,7 @@ import com.ofds.exception.AgentAssignmentException;
 import com.ofds.exception.AgentListNotFoundException;
 import com.ofds.exception.DataNotFoundException;
 import com.ofds.exception.OrderNotFoundException;
-import com.ofds.mapper.OrderMapper; // Corrected package to .mapper
+import com.ofds.mapper.OrderMapper; 
 
 import com.ofds.repository.CustomerRepository;
 import com.ofds.repository.DeliveryAgentRepository;
@@ -25,8 +25,6 @@ import com.ofds.repository.OrderRepository;
 import com.ofds.repository.OrdersItemsRepository;
 import com.ofds.repository.RestaurantRepository;
 
-//import jakarta.transaction.Transactional; // Annotation for transaction management
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,13 +32,12 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.slf4j.Logger; // Needed for logging
-import org.slf4j.LoggerFactory; // Needed for logging
+import org.slf4j.Logger; 
+import org.slf4j.LoggerFactory; 
 
-// Renaming the class to OrderService is common, but keeping OrdersService is fine.
 /**
- * This service contains the business logic for handling orders. It is
- * responsible for placing new orders and retrieving order history.
+ * Service class responsible for all business logic related to order processing, 
+ * including placement, history retrieval, assignment, and delivery management.
  */
 @Service
 public class OrdersService {
@@ -63,7 +60,7 @@ public class OrdersService {
 	CustomerRepository customerRepository;
 
 	@Autowired
-	private MenuItemRepository menuItemRepository; // Injected directly
+	private MenuItemRepository menuItemRepository; 
 
 	@Autowired
 	OrderMapper orderMapper;
@@ -73,16 +70,9 @@ public class OrdersService {
 	
 	@Autowired
 	DeliveryAgentRepository agentRepository;
-//    private final MenuItemRepository menuItemRepository;
 
 	/**
-	 * Places a new order based on the items in the customer's cart. This method is
-	 * transactional, meaning if any step fails, all database changes will be rolled
-	 * back.
-	 * 
-	 * @param request The OrderRequest DTO containing customer and payment info.
-	 * @return An OrderResponse DTO with details of the newly created order.
-	 * @throws DataNotFoundException if the customer or restaurant is not found.
+	 * Places a new order based on the items in the customer's cart. The process is transactional.
 	 */
 	@Transactional
 	public OrderResponse placeOrder(OrderRequest request) throws DataNotFoundException {
@@ -91,19 +81,14 @@ public class OrdersService {
 		// 1. Fetch the customer's cart to get the items for the order.
 		CartDTO cartDTO = cartService.getCartByCustomerId(request.getCustomerId());
 
-		// Check if the cart is empty. If so, we cannot place an order.
 		if (cartDTO == null || cartDTO.getItems().isEmpty()) {
 			throw new IllegalStateException("Cannot place an order with an empty cart or non-existent cart.");
 		}
 
-		// 2. Create a new OrderEntity. This is the object that will be saved to the
-		// 'orders' table.
+		// 2. Create a new OrderEntity.
 		OrderEntity order = new OrderEntity();
 
-		// 3. Find the Customer and Restaurant entities from the database using their
-		// IDs.
-		// We use orElseThrow to handle the case where the customer or restaurant is not
-		// found.
+		// 3. Find the Customer and Restaurant entities.
 		CustomerEntity customer = customerRepository.findById(request.getCustomerId())
 				.orElseThrow(() -> new DataNotFoundException("Customer not found"));
 
@@ -112,12 +97,12 @@ public class OrdersService {
 
 		// 4. Map the details from the request and cart to the OrderEntity.
 		order.setUser(customer);
-		order.setUserId(customer.getId()); // Manually set the second user/customer ID field
+		order.setUserId(customer.getId()); 
 		order.setRestaurant(restaurant);
 		order.setOrderDate(LocalDateTime.now());
 		order.setOrderStatus("Placed");
-		order.setPaymentStatus("Paid"); // Assuming payment is always successful in this simplified flow.
-		order.setPaymentMethod("Razorpay"); // Changed to reflect real integration
+		order.setPaymentStatus("Paid"); 
+		order.setPaymentMethod("Razorpay"); 
 		order.setTotalAmount(request.getTotalAmount());
 		order.setDeliveryAddress(request.getDeliveryAddress());
 
@@ -129,18 +114,17 @@ public class OrdersService {
 		order.setRazorpaySignature(request.getRazorpaySignature());
 		order.setEstimatedDelivery(LocalDateTime.now().plusMinutes(45));
 
-		// 5. Convert the items from the cart (CartItemDTO) to order items
-		// (OrderItemEntity).
+		// 5. Convert the items from the cart to order items.
 		List<OrderItemEntity> orderItems = cartDTO.getItems().stream().map(cartItemDTO -> {
-			// Find the corresponding menu item from the database.
+			
 			return menuItemRepository.findById(cartItemDTO.getMenuItemId()).map(menuItem -> {
 				OrderItemEntity orderItem = new OrderItemEntity();
-				orderItem.setOrder(order); // Link to the unsaved order
+				orderItem.setOrder(order); 
 				orderItem.setMenuItem(menuItem);
 				orderItem.setName(cartItemDTO.getName());
 				orderItem.setPrice(cartItemDTO.getPrice());
 				orderItem.setQuantity(cartItemDTO.getQuantity());
-				orderItem.setImageUrl(menuItem.getImage_url()); // Set the image URL
+				orderItem.setImage_url(menuItem.getImage_url()); 
 				return orderItem;
 			}).orElseGet(() -> {
 				log.warn("Menu item ID {} not found while placing order. Skipping item.", cartItemDTO.getMenuItemId());
@@ -152,11 +136,10 @@ public class OrdersService {
 			throw new IllegalStateException("Cannot place an order with no valid items.");
 		}
 
-		// 6. Set the items on the order. Because of CascadeType.ALL, these will be
-		// saved with the order.
+		// 6. Set the items on the order.
 		order.setItems(orderItems);
 
-		// 7. Save the new OrderEntity to the database. This generates the order ID.
+		// 7. Save the new OrderEntity.
 		OrderEntity savedOrder = orderRepository.save(order);
 
 		// 8. Link each order item to the saved order and then save them.
@@ -164,46 +147,32 @@ public class OrdersService {
 		ordersItemsRepository.saveAll(orderItems);
 		savedOrder.setItems(orderItems);
 
-		// 9. Clear the customer's cart now that the order is placed.
+		// 9. Clear the customer's cart.
 		cartService.clearCart(request.getCustomerId());
 
-		// 10. Convert the final OrderEntity to an OrderResponse DTO to send back to the
-		// frontend.
+		// 10. Convert the final OrderEntity to an OrderResponse DTO.
 		return orderMapper.toResponse(savedOrder);
 	}
 
+	/**
+	 * Retrieves the historical list of orders for a specific user ID.
+	 */
 	public List<OrderResponse> getOrdersHistory(Long userId) throws DataNotFoundException {
 
-		// 1. Verify Customer Existence (Optional, but good practice)
 		if (!customerRepository.existsById(userId)) {
 			throw new DataNotFoundException("Customer with ID " + userId + " not found.");
 		}
 
-		// 2. Fetch Orders by User ID, ensuring items are also fetched
-		// We use a custom method in OrderRepository for this.
-		// Fetching by user is crucial, and sorting by orderDate descending is typical
-		// for history.
 		List<OrderEntity> orderEntities = orderRepository.findByUserIdOrderByOrderDateDesc(userId);
 
-		// NOTE: This list could be empty, which is a valid result (no orders placed
-		// yet).
-
-		// 3. Map Entities to DTOs
 		List<OrderResponse> orderResponses = orderEntities.stream().map(orderMapper::toResponse)
 				.collect(Collectors.toList());
 
 		return orderResponses;
 	}
 
-	// --------------------------------------------------------------------------------
-	// ORDER LIST VIEW METHODS
-	// --------------------------------------------------------------------------------
-
 	/**
-	 * Retrieves all orders and maps them to OrderSummaryDTOs for the list view.
-	 * Uses FETCH JOIN to load all necessary associations eagerly.
-	 *
-	 * @return A list of OrderSummaryDTOs.
+	 * Retrieves all orders and maps them to OrderSummaryDTOs for the admin list view.
 	 */
 	@Transactional(readOnly = true)
 	public List<OrderSummaryDTO> findAllOrders() {
@@ -212,10 +181,7 @@ public class OrdersService {
 	}
 
 	/**
-	 * Maps an OrdersEntity to the flat OrderSummaryDTO structure required by the
-	 * Angular list view. * @param order The OrdersEntity to map.
-	 * 
-	 * @return The populated OrderSummaryDTO.
+	 * Maps an OrderEntity to the flat OrderSummaryDTO structure.
 	 */
 	private OrderSummaryDTO mapToOrderSummaryDto(OrderEntity order) {
 		OrderSummaryDTO dto = new OrderSummaryDTO();
@@ -228,12 +194,12 @@ public class OrdersService {
 		dto.setOrderDate(order.getOrderDate());
 
 		// 2. Map Flattened Customer and Restaurant Details
-		dto.setCustomerName(order.getUser().getName()); // getCustomer() method to getUser. if any issue occur revert this.
+		dto.setCustomerName(order.getUser().getName()); 
 		dto.setDropAddress(order.getDeliveryAddress());
 		dto.setRestaurantName(order.getRestaurant().getName());
 		dto.setPickupAddress(order.getRestaurant().getAddress());
 
-		// 3. Map Agent Details (Handle unassigned orders)
+		// 3. Map Agent Details
 		if (order.getAgent() != null) {
 			dto.setAgentName(order.getAgent().getName());
 		} else {
@@ -245,45 +211,30 @@ public class OrdersService {
 				.collect(Collectors.toList());
 
 		dto.setItems(itemDtos);
-		// Total items count is the number of distinct line items in the order
 		dto.setTotalItems(itemDtos.size());
 
 		return dto;
 	}
-
-	// --------------------------------------------------------------------------------
-	// ORDER DETAIL VIEW METHODS
-	// --------------------------------------------------------------------------------
-
+	
 	/**
-	 * Retrieves detailed information for a single order, including all items and a
-	 * list of currently available delivery agents.
-	 *
-	 * @param orderId The ID of the order to retrieve.
-	 * @return The populated OrdersDetailsDTO.
-	 * @throws OrderNotFoundException if the order ID does not exist.
+	 * Retrieves detailed information for a single order, including all items and available agents.
 	 */
 	@Transactional(readOnly = true)
 	public OrderDetailsDTO getOrderDetails(Long orderId) {
-		// FindByIdWithItems uses a FETCH JOIN for OrderItems and relies on other joins
-		// for Customer/Restaurant.
+		
 		OrderEntity order = orderRepository.findByIdWithItems(orderId)
 				.orElseThrow(() -> new OrderNotFoundException("Order not found with ID: " + orderId));
 
-		// Map OrderItemsEntity list to OrdersItemsDTO list
 		List<OrderItemDTO> itemDtos = order.getItems().stream().map(this::mapToOrderItemDto)
 				.collect(Collectors.toList());
 
-		// Fetch list of available delivery agents (delegated to DeliveryAgentService)
 		List<DeliveryAgentDTO> agentDtos = deliveryAgentService.findAvailableDeliveryAgents();
 
-		// Map the main entity data to the DTO
 		return mapToOrderDetailsDto(order, itemDtos, agentDtos);
 	}
 
 	/**
-	 * Maps an OrderItemsEntity to its corresponding OrdersItemsDTO, fetching the
-	 * menu item name via the repository.
+	 * Maps an OrderItemEntity to its corresponding OrderItemDTO.
 	 */
 	private OrderItemDTO mapToOrderItemDto(OrderItemEntity item) {
 		
@@ -292,19 +243,6 @@ public class OrdersService {
 			item.getPrice(),
 			item.getQuantity()
 		);
-//		Long menuItemId = item.getMenuItem();
-//
-//		// Fetch the name using the injected repository
-//		String itemName = menuItemRepository.findById(menuItemId)
-//				.map(MenuItemEntity::getName)
-//				.orElse("Unknown Item (ID: " + menuItemId + ")");
-//
-//		return new OrderItemDTO(
-//			item.getName()
-//			item.getPrice(), 
-//			item.getQuantity(), 
-//			item.getImage_url()
-//		);
 	}
 
 	/**
@@ -320,10 +258,10 @@ public class OrdersService {
 		dto.setTotalAmount(order.getTotalAmount());
 
 		dto.setCustomerName(order.getUser().getName());
-		dto.setCustomerAddress(order.getDeliveryAddress()); // Used for drop address
+		dto.setCustomerAddress(order.getDeliveryAddress()); 
 
 		dto.setRestaurantName(order.getRestaurant().getName());
-		dto.setRestaurantAddress(order.getRestaurant().getAddress()); // Used for pickup address
+		dto.setRestaurantAddress(order.getRestaurant().getAddress()); 
 
 		dto.setItems(itemDtos);
 		dto.setAvailableAgents(agentDtos);
@@ -336,31 +274,20 @@ public class OrdersService {
 	}
 
 	/**
-	 * Finds all available delivery agents (delegates to DeliveryAgentService).
+	 * Finds all available delivery agents.
 	 */
 	@Transactional(readOnly = true)
 	public List<DeliveryAgentDTO> findAvailableDeliveryAgents() {
 		return deliveryAgentService.findAvailableDeliveryAgents();
 	}
 
-	// --------------------------------------------------------------------------------
-	// ORDER ASSIGNMENT METHODS
-	// --------------------------------------------------------------------------------
-
+	
 	/**
-	 * Assigns a specified agent to a placed order.
-	 *
-	 * @param orderId The ID of the order to assign.
-	 * @param agentId The ID of the agent to assign.
-	 * @return The updated OrdersEntity.
-	 * @throws OrderNotFoundException     if the order is not found.
-	 * @throws AgentListNotFoundException if the agent is not found.
-	 * @throws AgentAssignmentException   if the order/agent status prevents
-	 *                                    assignment.
+	 * Assigns a specific delivery agent to a PLACED order and updates statuses (Order: OUT FOR DELIVERY, Agent: BUSY).
 	 */
 	@Transactional
 	public OrderEntity assignAgent(Long orderId, Long agentId) {
-		// Fetch entities, throwing custom exceptions if not found
+		// Fetch entities
 		OrderEntity order = orderRepository.findById(orderId)
 				.orElseThrow(() -> new OrderNotFoundException("Order not found with ID: " + orderId));
 
@@ -382,30 +309,20 @@ public class OrdersService {
 		order.setOrderStatus("OUT FOR DELIVERY");
 		OrderEntity updatedOrder = orderRepository.save(order);
 
-		// 2. Update the Agent status (Agent is now BUSY)
+		// 2. Update the Agent status
 		agent.setStatus("BUSY");
 		agentRepository.save(agent);
 
 		return updatedOrder;
 	}
 
-	// --------------------------------------------------------------------------------
-	// ORDER DELIVERY METHODS
-	// --------------------------------------------------------------------------------
 
 	/**
-	 * Marks an order as delivered, updates the associated agent's statistics
-	 * (including commission), and sets the agent's status back to AVAILABLE.
-	 *
-	 * @param orderId The ID of the order being delivered.
-	 * @param agentId The ID of the agent who delivered it (for
-	 *                verification/safety).
-	 * @return The updated OrdersEntity.
-	 * @throws OrderNotFoundException if the order is not found.
+	 * Marks an order as DELIVERED, updates the agent's statistics and total earnings, and sets the agent back to AVAILABLE.
 	 */
 	@Transactional
 	public OrderEntity deliverOrder(Long orderId, Long agentId) {
-		// Fetch order, throwing custom exception if not found
+		// Fetch order
 		OrderEntity order = orderRepository.findById(orderId)
 				.orElseThrow(() -> new OrderNotFoundException("Order not found with ID: " + orderId));
 
@@ -415,14 +332,13 @@ public class OrdersService {
 		// 2. Update agent statistics and status
 		DeliveryAgentEntity agent = order.getAgent();
 
-		// Only update agent stats if an agent is properly linked
 		if (agent != null) {
 			double total = order.getTotalAmount() == null ? 0.0 : order.getTotalAmount();
 
 			// Calculate 15% commission on the order total
 			double rawBonus = total * 0.15;
 
-			// Round the bonus to 2 decimal places (cents) for financial accuracy
+			// Round the bonus to 2 decimal places
 			double roundedBonus = Math.round(rawBonus * 100.0) / 100.0;
 
 			// Update earnings and delivery count
@@ -430,7 +346,7 @@ public class OrdersService {
 			agent.setTotalEarnings((agent.getTotalEarnings() == null ? 0.0 : agent.getTotalEarnings()) + roundedBonus);
 			agent.setTotalDeliveries((agent.getTotalDeliveries() == null ? 0 : agent.getTotalDeliveries()) + 1);
 
-			// Agent is now AVAILABLE after completing the delivery
+			// Agent is now AVAILABLE
 			agent.setStatus("AVAILABLE");
 
 			agentRepository.save(agent);

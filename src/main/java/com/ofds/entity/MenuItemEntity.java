@@ -9,6 +9,9 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
+/**
+ * Represents a single food item that belongs to a restaurant's menu, including its details, price, and image URL.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

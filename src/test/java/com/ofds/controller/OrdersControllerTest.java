@@ -1,16 +1,20 @@
 package com.ofds.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ofds.config.JwtUtils; // Required import for security mock
 import com.ofds.dto.AgentAssignmentRequestDTO;
 import com.ofds.dto.DeliveryAgentDTO;
 import com.ofds.entity.DeliveryAgentEntity;
 import com.ofds.entity.OrderEntity;
-import com.ofds.service.OrdersService;
 import com.ofds.exception.AgentAssignmentException;
 import com.ofds.exception.OrderNotFoundException;
+import com.ofds.service.CustomerService; // Required import for security mock
+import com.ofds.service.CustomerUserDetailsService; // Required import for security mock
+import com.ofds.service.OrdersService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration; // Import for exclusion
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -20,24 +24,24 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
-
-/**
- * Vertical Integration Test (WebMvcTest Slice) for OrdersController.
- * This tests the API endpoints, including the critical PUT requests for assignment and delivery,
- * with necessary security post-processors (user and csrf) to avoid 401/403 errors.
- */
-@WebMvcTest(OrdersController.class)
+@WebMvcTest(
+    controllers = OrdersController.class,
+    excludeAutoConfiguration = {SecurityAutoConfiguration.class} // Exclude security auto-config for clean tests
+)
 class OrdersControllerTest {
+
+    private static final String BASE_PATH = "/api/auth/orders";
 
     @Autowired
     private MockMvc mockMvc;
@@ -45,66 +49,66 @@ class OrdersControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @SuppressWarnings("removal")
-	@MockBean
+    @MockBean
     private OrdersService ordersService;
 
-    // --- Helper Entities ---
+    @MockBean
+    private JwtUtils jwtUtils;
+    
+    @MockBean
+    private CustomerUserDetailsService customerUserDetailsService;
+    
+    @MockBean
+    private CustomerService customerService;
+    
     private DeliveryAgentEntity mockAgent;
     private OrderEntity mockOrderOutForDelivery;
     private DeliveryAgentDTO availableAgentDTO;
+    private final Long MOCK_ORDER_ID = 1001L;
+    private final Long MOCK_AGENT_ID = 201L;
 
     @BeforeEach
     void setUp() {
-        // Mock Agent (Post-assignment status)
         mockAgent = new DeliveryAgentEntity();
-        mockAgent.setId(201L);
+        mockAgent.setId(MOCK_AGENT_ID);
         mockAgent.setName("Agent A");
         mockAgent.setStatus("BUSY");
 
-        // Mock Order (Post-assignment state)
         mockOrderOutForDelivery = new OrderEntity();
-        mockOrderOutForDelivery.setId(1001L);
+        mockOrderOutForDelivery.setId(MOCK_ORDER_ID);
         mockOrderOutForDelivery.setOrderStatus("OUT FOR DELIVERY");
         mockOrderOutForDelivery.setAgent(mockAgent);
         
-        // Mock Available Agent DTO
         availableAgentDTO = new DeliveryAgentDTO(
-                202L,                        // 1. id (Integer)
-                "A002",                     // 2. agentID (String)
-                "Agent B",                  // 3. name (String)
-                "555-0101",                 // 4. phone (String) <-- Must be a String
-                "agentb@ofds.com",          // 5. email (String) <-- Must be a String
-                "AVAILABLE",                // 6. status (String)
-                null,                       // 7. currentOrderID (Integer) <-- Must be null/Integer
-                0.0,                        // 8. todayEarning (Double)
-                0.0,                        // 9. totalEarning (Double)
-                0,                          // 10. totalDeliveries (Integer) <-- Must be an Integer
-                5.0,                        // 11. rating (Double) <-- Was missing
-                Collections.emptyList()     // 12. orders (List<Object>) <-- Must be a List
+                202L, 
+                "A002", 
+                "Agent B",                  
+                "555-0101",                 
+                "agentb@ofds.com",          
+                "AVAILABLE",                
+                null,                       
+                0.0,                        
+                0.0,                        
+                0,                          
+                5.0,                        
+                Collections.emptyList()     
             );
     }
-    
-    // =========================================================================
-    // Test Cases for PUT /api/orders/assign (Agent Assignment)
-    // =========================================================================
-
+  
     @Test
     void assignAgentToOrder_ShouldReturnAgentNameAnd200OK_OnSuccess() throws Exception {
         // ARRANGE
-        AgentAssignmentRequestDTO request = new AgentAssignmentRequestDTO(1001L, 201L);
+        AgentAssignmentRequestDTO request = new AgentAssignmentRequestDTO(MOCK_ORDER_ID, MOCK_AGENT_ID);
         
-        // Mock the service to return the updated order entity
-        when(ordersService.assignAgent(request.getOrderId(), request.getAgentId()))
+        when(ordersService.assignAgent(eq(MOCK_ORDER_ID), eq(MOCK_AGENT_ID)))
                 .thenReturn(mockOrderOutForDelivery);
 
         // ACT & ASSERT
-        mockMvc.perform(put("/api/orders/assign")
+        mockMvc.perform(put(BASE_PATH + "/admin/assign")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request))
-                .with(user("admin").roles("ADMIN")) // Authenticate as Admin
-                .with(csrf())) // 👈 FIX: Include CSRF Token
-                
+                .with(user("admin").roles("ADMIN")) 
+                .with(csrf())) 
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.agentName").value("Agent A"));
     }
@@ -112,127 +116,109 @@ class OrdersControllerTest {
     @Test
     void assignAgentToOrder_ShouldReturn404_WhenOrderNotFound() throws Exception {
         // ARRANGE
-        AgentAssignmentRequestDTO request = new AgentAssignmentRequestDTO(9999L, 201L);
+        Long nonExistentId = 9999L;
+        AgentAssignmentRequestDTO request = new AgentAssignmentRequestDTO(nonExistentId, MOCK_AGENT_ID);
         
-        // Mock the service to throw the expected exception
-        when(ordersService.assignAgent(anyLong(), anyLong()))
-                .thenThrow(new OrderNotFoundException("Order not found."));
+        when(ordersService.assignAgent(eq(nonExistentId), anyLong()))
+                .thenThrow(new OrderNotFoundException("Order details not found for ID : " + nonExistentId)); // Use OrderNotFoundException as per controller
 
         // ACT & ASSERT
-        mockMvc.perform(put("/api/orders/assign")
+        mockMvc.perform(put(BASE_PATH + "/admin/assign")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request))
                 .with(user("admin").roles("ADMIN"))
-                .with(csrf())) // 👈 FIX: Include CSRF Token
-                
-                .andExpect(status().isNotFound()); // Expect 404 (assuming OrderNotFoundException maps to 404)
+                .with(csrf()))
+                .andExpect(status().isNotFound()); 
     }
 
     @Test
     void assignAgentToOrder_ShouldReturn400_WhenOrderOrAgentStatusIsInvalid() throws Exception {
         // ARRANGE
-        AgentAssignmentRequestDTO request = new AgentAssignmentRequestDTO(1001L, 201L);
+        AgentAssignmentRequestDTO request = new AgentAssignmentRequestDTO(MOCK_ORDER_ID, MOCK_AGENT_ID);
+        String exceptionMessage = "Order status not PLACED or Agent not AVAILABLE.";
         
-        // Mock the service to throw the expected business rule exception
         when(ordersService.assignAgent(anyLong(), anyLong()))
-                .thenThrow(new AgentAssignmentException("Order status not PLACED."));
+                .thenThrow(new AgentAssignmentException(exceptionMessage));
 
         // ACT & ASSERT
-        mockMvc.perform(put("/api/orders/assign")
+        mockMvc.perform(put(BASE_PATH + "/admin/assign")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request))
                 .with(user("admin").roles("ADMIN"))
-                .with(csrf())) // 👈 FIX: Include CSRF Token
-                
-                .andExpect(status().isBadRequest()); // Expect 400 (assuming OrderAssignmentException maps to 400)
+                .with(csrf())) 
+                .andExpect(status().isBadRequest()) 
+                .andExpect(content().string(exceptionMessage));
     }
-    
-    // =========================================================================
-    // Test Cases for PUT /api/orders/{orderId}/deliver (Mark Delivered)
-    // =========================================================================
     
     @Test
     void markOrderAsDelivered_ShouldReturnUpdatedStatusesAnd200OK() throws Exception {
         // ARRANGE
         OrderEntity deliveredOrder = new OrderEntity();
-        deliveredOrder.setId(1001L);
         deliveredOrder.setOrderStatus("DELIVERED");
         
         DeliveryAgentEntity availableAgent = new DeliveryAgentEntity();
-        availableAgent.setId(201L);
         availableAgent.setStatus("AVAILABLE");
         deliveredOrder.setAgent(availableAgent);
         
-        // Request body for delivery
         String deliveryPayload = objectMapper.writeValueAsString(
             new HashMap<String, Object>() {
-				private static final long serialVersionUID = 7933830945185562957L;
-			{
-                put("agentId", 201);
+				private static final long serialVersionUID = 7933830945185562957L; {
+                put("agentId", MOCK_AGENT_ID.intValue()); // Use .intValue() to match JSON behavior
             }}
         );
         
-        // Mock the service call
-        when(ordersService.deliverOrder(1001L, 201L)).thenReturn(deliveredOrder);
+        when(ordersService.deliverOrder(eq(MOCK_ORDER_ID), eq(MOCK_AGENT_ID))).thenReturn(deliveredOrder);
 
         // ACT & ASSERT
-        mockMvc.perform(put("/api/orders/{orderId}/deliver", 1001)
+        mockMvc.perform(put(BASE_PATH + "/admin/{orderId}/deliver", MOCK_ORDER_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(deliveryPayload)
-                .with(user("agent201").roles("DELIVERY")) // Authenticate as an Agent
-                .with(csrf())) // 👈 FIX: Include CSRF Token
-                
+                .with(user("admin").roles("ADMIN")) // Test using ADMIN role access
+                .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.orderStatus").value("DELIVERED"))
-                .andExpect(jsonPath("$.agentStatus").value("AVAILABLE"));
+                .andExpect(jsonPath("$.agentStatus").value("AVAILABLE"))
+                .andExpect(jsonPath("$.currentOrderID").doesNotExist());
     }
 
     @Test
     void markOrderAsDelivered_ShouldReturn404_WhenOrderNotFound() throws Exception {
         // ARRANGE
+        Long nonExistentId = 9999L;
         String deliveryPayload = objectMapper.writeValueAsString(
             new HashMap<String, Object>() {
 				private static final long serialVersionUID = 6632483826004351622L;
 			{
-                put("agentId", 201);
+                put("agentId", MOCK_AGENT_ID.intValue());
             }}
         );
-        
-        // Mock the service to throw the expected exception
-        when(ordersService.deliverOrder(9999L, 201L))
-                .thenThrow(new OrderNotFoundException("Order not found."));
+        String exceptionMessage = "Could not find or update Order ID 9999 for delivery.";
+        when(ordersService.deliverOrder(eq(nonExistentId), anyLong())).thenReturn(null);
 
         // ACT & ASSERT
-        mockMvc.perform(put("/api/orders/{orderId}/deliver", 9999)
+        mockMvc.perform(put(BASE_PATH + "/admin/{orderId}/deliver", nonExistentId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(deliveryPayload)
-                .with(user("agent201").roles("DELIVERY"))
-                .with(csrf())) // 👈 FIX: Include CSRF Token
-                
-                .andExpect(status().isNotFound()); // Expect 404
+                .with(user("admin").roles("ADMIN"))
+                .with(csrf()))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string(exceptionMessage));
     }
     
-    // =========================================================================
-    // Test Cases for GET /api/orders/agents/available
-    // =========================================================================
-
     @Test
-    void getAvailableDeliveryAgents_ShouldReturnAvailableAgents() throws Exception {
+    void getAvailableDeliveryAgents_ShouldReturn200OKWithAgents() throws Exception {
         // ARRANGE
         when(ordersService.findAvailableDeliveryAgents())
                 .thenReturn(List.of(availableAgentDTO));
 
         // ACT & ASSERT
-        mockMvc.perform(get("/api/orders/agents/available")
+        mockMvc.perform(get(BASE_PATH + "/admin/agents/available")
                 .contentType(MediaType.APPLICATION_JSON)
-                .with(user("admin").roles("ADMIN"))) // Authenticate (optional for GET, but safe)
-                
+                .with(user("admin").roles("ADMIN"))) 
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].name").value("Agent B"))
                 .andExpect(jsonPath("$[0].status").value("AVAILABLE"))
                 .andExpect(jsonPath("$.length()").value(1));
     }
     
-    // NOTE: For brevity, tests for other GET endpoints (getAllOrders, getOrderDetails) 
-    // are omitted, but they follow the same pattern as the available agents test.
 }

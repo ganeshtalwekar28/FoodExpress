@@ -3,7 +3,7 @@ package com.ofds.service;
 import com.ofds.dto.CartDTO;
 import com.ofds.entity.*;
 import com.ofds.exception.DataNotFoundException;
-import com.ofds.config.CartMapper;
+import com.ofds.mapper.CartMapper;
 import com.ofds.repository.*;
 
 import org.junit.jupiter.api.BeforeEach;

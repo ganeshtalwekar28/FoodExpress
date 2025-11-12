@@ -60,6 +60,7 @@ class MenuItemServiceTest {
 		menuItemDTO.setRestaurantId(1001L);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Test
 	void getMenuItemsByRestaurantId_returnsList_whenRestaurantExists() throws Exception {
 		restaurant.setMenuItems(List.of(menuItemEntity));
@@ -167,81 +168,35 @@ class MenuItemServiceTest {
 	}
 
 	@Test
-
 	void updateMenuItem_throws_whenNotFound() {
-
 		when(menuItemRepository.findById(999L)).thenReturn(Optional.empty());
-
 		DataNotFoundException ex = assertThrows(DataNotFoundException.class, () ->
-
 		service.updateMenuItem(999L, menuItemDTO)
-
 		);
 
 		assertThat(ex.getMessage()).contains("Menu item not found with id: 999");
-
 		verify(menuItemRepository).findById(999L);
-
 		verifyNoMoreInteractions(menuItemRepository);
-
 	}
 
 	@Test
-
 	void deleteMenuItem_deletes_whenExists() throws Exception {
-
 		when(menuItemRepository.findById(30L)).thenReturn(Optional.of(menuItemEntity));
-
 		ResponseEntity<Void> resp = service.deleteMenuItem(30L);
-
 		assertThat(resp.getStatusCodeValue()).isEqualTo(200);
-
 		verify(menuItemRepository).findById(30L);
-
 		verify(menuItemRepository).deleteById(30L);
-
 	}
 
 	@Test
-
 	void deleteMenuItem_throws_whenNotFound() {
-
 		when(menuItemRepository.findById(400L)).thenReturn(Optional.empty());
-
 		DataNotFoundException ex = assertThrows(DataNotFoundException.class, () ->
-
 		service.deleteMenuItem(400L)
-
 		);
-
+		
 		assertThat(ex.getMessage()).contains("Menu item not found with id: 400");
-
 		verify(menuItemRepository).findById(400L);
-
 		verify(menuItemRepository, never()).deleteById(anyLong());
-
 	}
-//
-//	@Test
-//
-//	void getRestaurantByEmail_returnsList() {
-//
-//		RestaurantEntity r1 = new RestaurantEntity();
-//
-//		r1.setId(5);
-//
-//		r1.setName("R1");
-//
-//		when(restaurantRepository.findByEmail("owner@example.com")).thenReturn(List.of(r1));
-//
-//		List<RestaurantEntity> res = service.getRestaurantByEmail("owner@example.com");
-//
-//		assertThat(res).hasSize(1);
-//
-//		assertThat(res.get(0).getName()).isEqualTo("R1");
-//
-//		verify(restaurantRepository).findByEmail("owner@example.com");
-//
-//	}
-
 }

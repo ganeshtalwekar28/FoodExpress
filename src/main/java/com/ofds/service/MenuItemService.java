@@ -19,6 +19,10 @@ import com.ofds.repository.RestaurantRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Service class for handling all business logic related to menu items, 
+ * including CRUD operations and searching within a restaurant context.
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -33,7 +37,9 @@ public class MenuItemService {
 	@Autowired
 	ModelMapper modelMapper;
 
-	//Display Menu Items For restaurant
+	/**
+	 * Retrieves all menu items belonging to a specific restaurant ID and maps them to a list of DTOs.
+	 */
 	public ResponseEntity<List<MenuItemDTO>> getMenuItemsByRestaurantId(Long restaurantId) throws DataNotFoundException {
 		Optional<RestaurantEntity> restaurantOpt = restaurantRepository.findById(restaurantId);
 	    if (restaurantOpt.isEmpty()) {
@@ -48,7 +54,9 @@ public class MenuItemService {
 	    }
 	}
 	
-	//Add new Item
+	/**
+	 * Creates a new menu item and associates it with the specified restaurant ID.
+	 */
     public ResponseEntity<MenuItemDTO> createMenuItem(Long restaurantId, MenuItemDTO dto) throws DataNotFoundException {
         Optional<RestaurantEntity> restaurantOpt = restaurantRepository.findById(restaurantId);
         if (restaurantOpt.isEmpty()) {
@@ -69,7 +77,9 @@ public class MenuItemService {
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
-    //Update Existing Item
+    /**
+     * Updates the details of an existing menu item identified by its ID.
+     */
     public ResponseEntity<MenuItemDTO> updateMenuItem(Long id, MenuItemDTO dto) throws DataNotFoundException {
         Optional<MenuItemEntity> itemOpt = menuItemRepository.findById(id);
         if (itemOpt.isEmpty()) {
@@ -88,7 +98,9 @@ public class MenuItemService {
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
-    //delete operation
+    /**
+     * Deletes a menu item identified by its ID.
+     */
     public ResponseEntity<Void> deleteMenuItem(Long id) throws DataNotFoundException {
         Optional<MenuItemEntity> itemOpt = menuItemRepository.findById(id);
         if (itemOpt.isEmpty()) {
@@ -99,21 +111,22 @@ public class MenuItemService {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    /**
+     * Searches for menu items whose name contains the specified query string (case-insensitive).
+     */
     public ResponseEntity<List<MenuItemDTO>> searchMenuItemsByName(String query) throws DataNotFoundException {
         
-        // 1. Get the list of entities from the repository (using the new repository method)
         List<MenuItemEntity> listEntity = menuItemRepository.findByNameContainingIgnoreCase(query);
         
         if (listEntity.isEmpty()) {
             throw new DataNotFoundException("No menu items found matching the search query: " + query);
         }
 
-        // 2. Convert Entities to DTOs
+        // Convert Entities to DTOs and set the restaurant ID
         List<MenuItemDTO> dtolst = listEntity.stream()
             .map(itemEntity -> {
                 MenuItemDTO dto = modelMapper.map(itemEntity, MenuItemDTO.class);
                 
-                // CRITICAL STEP: Set the restaurant ID for navigation in Angular
                 if (itemEntity.getRestaurant() != null) {
                     dto.setRestaurantId(itemEntity.getRestaurant().getId());
                 }

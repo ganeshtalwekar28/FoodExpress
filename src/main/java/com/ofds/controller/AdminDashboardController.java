@@ -13,10 +13,6 @@ import com.ofds.dto.AdminDashboardDTO;
 import com.ofds.exception.MetricsDataNotFound;
 import com.ofds.service.AdminDashboardService;
 
-/**
- * REST controller for retrieving administrative dashboard metrics.
- * This provides aggregated summary data for the main admin console view.
- */
 @RestController
 @RequestMapping("/api/auth/admin/dashboard")
 @CrossOrigin(origins = "http://localhost:4200") 
@@ -26,10 +22,7 @@ public class AdminDashboardController {
     private final AdminDashboardService dashboardService;
 
     /**
-     * Endpoint to fetch a collection of key performance metrics for the admin dashboard.
-     * The service layer handles data aggregation.
-     *
-     * @return A ResponseEntity containing the AdminDashboardDTO with status 200 OK.
+     * Fetches all key metrics and summary data needed to display the Admin dashboard.
      */
     @GetMapping()
     public ResponseEntity<AdminDashboardDTO> getAdminDashboardMetrics() throws MetricsDataNotFound {

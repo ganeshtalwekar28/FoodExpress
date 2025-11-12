@@ -6,6 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
  
+/**
+ * DTO used to transfer comprehensive data about a restaurant, including its details, rating, 
+ * cuisine type, and a list of its menu items.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

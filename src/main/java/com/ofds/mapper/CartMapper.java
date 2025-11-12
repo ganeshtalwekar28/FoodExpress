@@ -1,4 +1,4 @@
-package com.ofds.config;
+package com.ofds.mapper;
 
 import com.ofds.dto.CartDTO;
 import com.ofds.dto.CartItemDTO;
@@ -9,9 +9,16 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Utility class responsible for converting data between the CartEntity persistence model 
+ * and the CartDTO data transfer object for display.
+ */
 @Component
 public class CartMapper {
 
+    /**
+     * Converts a CartEntity object into a complete CartDTO, including all associated cart items.
+     */
     public CartDTO toDTO(CartEntity cart) {
         CartDTO dto = new CartDTO();
         dto.setCartId(cart.getId());
@@ -27,6 +34,9 @@ public class CartMapper {
         return dto;
     }
 
+    /**
+     * Converts a single CartItemEntity object into a CartItemDTO.
+     */
     public CartItemDTO toItemDTO(CartItemEntity item) {
         CartItemDTO dto = new CartItemDTO();
         dto.setCartItemId(item.getId());

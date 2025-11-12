@@ -20,14 +20,18 @@ public class CartController {
     @Autowired
     private CartService cartService;
 
-    // GET /api/carts/customer/{customerId}
+    /**
+     * Retrieves the current shopping cart details for a specific customer.
+     */
     @GetMapping("/customer/{customerId}")
     public ResponseEntity<CartDTO> getCartByCustomer(@PathVariable Long customerId) throws DataNotFoundException {
         CartDTO cart = cartService.getCartByCustomerId(customerId);
         return new ResponseEntity<>(cart, HttpStatus.OK);
     }
 
-    // POST /api/carts/customer/{customerId}/restaurant/{restaurantId}/items/{menuItemId}?quantity=2
+    /**
+     * Adds a new menu item to the customer's cart or increments its quantity.
+     */
     @PostMapping("/customer/{customerId}/restaurant/{restaurantId}/items/{menuItemId}")
     public ResponseEntity<CartDTO> addItemToCart(
             @PathVariable Long customerId,
@@ -38,7 +42,9 @@ public class CartController {
         return new ResponseEntity<>(updatedCart, HttpStatus.CREATED);
     }
 
-    // PUT /api/carts/customer/{customerId}/items/{cartItemId}?quantity=3
+    /**
+     * Updates the quantity of an existing item in the customer's cart.
+     */
     @PutMapping("/customer/{customerId}/items/{cartItemId}")
     public ResponseEntity<CartDTO> updateItemQuantity(
             @PathVariable Long customerId,
@@ -52,7 +58,9 @@ public class CartController {
         return new ResponseEntity<>(updatedCart, HttpStatus.OK);
     }
 
-    // DELETE /api/carts/customer/{customerId}/items/{cartItemId}
+    /**
+     * Removes a specific item completely from the customer's cart.
+     */
     @DeleteMapping("/customer/{customerId}/items/{cartItemId}")
     public ResponseEntity<CartDTO> removeItemFromCart(
             @PathVariable Long customerId,
@@ -64,7 +72,9 @@ public class CartController {
         return new ResponseEntity<>(updatedCart, HttpStatus.OK);
     }
 
-    // DELETE /api/carts/customer/{customerId}
+    /**
+     * Clears all items from the customer's shopping cart.
+     */
     @DeleteMapping("/customer/{customerId}")
     public ResponseEntity<Void> clearCart(@PathVariable Long customerId) throws DataNotFoundException {
         cartService.clearCart(customerId);

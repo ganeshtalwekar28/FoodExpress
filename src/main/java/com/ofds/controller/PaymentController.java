@@ -23,6 +23,9 @@ public class PaymentController {
 
     private static final Logger logger = LoggerFactory.getLogger(PaymentController.class);
 
+    /**
+     * Creates a new order on the Razorpay payment gateway to initiate a transaction.
+     */
     @PostMapping("/createOrder")
     public ResponseEntity<?> createRazorpayOrder(@RequestParam Double amount, @RequestParam String currency) {
         try {

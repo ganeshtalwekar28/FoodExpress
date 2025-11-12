@@ -4,9 +4,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
- * Custom exception for business rule violations during order assignment (e.g.,
- * order not PLACED, agent not AVAILABLE).
- * Spring will automatically map this to an HTTP 400 Bad Request response.
+ * Exception thrown when an attempt is made to assign an agent to an order, but a business rule 
+ * (like order status or agent availability) is violated.
  */
 @ResponseStatus(HttpStatus.BAD_REQUEST)
 public class AgentAssignmentException extends RuntimeException {

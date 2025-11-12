@@ -1,17 +1,4 @@
 package com.ofds.mapper;
-//
-//import org.modelmapper.ModelMapper;
-//import org.springframework.context.annotation.Bean;
-//import org.springframework.context.annotation.Configuration;
-//
-//@Configuration
-//public class ModelMapperconfig {
-//
-//	@Bean
-//	public ModelMapper modelMapper() {
-//		return new ModelMapper();
-//	}
-//}
 
 import org.modelmapper.ModelMapper;
 
@@ -19,16 +6,23 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 
+/**
+ * Configuration class responsible for creating and configuring the singleton instance 
+ * of the ModelMapper for use across the application's DTO-Entity mappers.
+ */
 @Configuration
 public class ModelMapperconfig {
 
+    /**
+     * Creates and configures the ModelMapper bean, enabling private field access 
+     * for automatic property matching.
+     */
     @Bean
-    public ModelMapper modelMapper() {
+    ModelMapper modelMapper() {
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration()
               .setFieldMatchingEnabled(true)
               .setFieldAccessLevel(org.modelmapper.config.Configuration.AccessLevel.PRIVATE);
-        
         
         return mapper;
     }

@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
 
 @ContextConfiguration(classes = OnlineFoodDeliverySystemApplication.class)
 @DataJpaTest
@@ -41,43 +43,26 @@ class DeliveryAgentRepositoryTest {
     @BeforeEach
     @Transactional
     void setUp() {
-        // --- CRITICAL PRE-TEST CLEANUP: Runs BEFORE every test to clear the database ---
-        // Child tables must be deleted before their parent tables due to foreign key constraints.
         
-        // 1. Delete lowest-level child tables
-        entityManager.getEntityManager().createQuery("DELETE FROM OrderItemsEntity").executeUpdate();
-        
-        // 2. DELETE CART ITEM ENTITY (Child of Cart)
-        // Assumes your Cart Item entity is named 'CartItemEntity'.
+        entityManager.getEntityManager().createQuery("DELETE FROM OrderItemEntity").executeUpdate();
         entityManager.getEntityManager().createQuery("DELETE FROM CartItemEntity").executeUpdate(); 
         
-        // 3. DELETE CART ENTITY (Child of Customer)
-        // Assumes your Cart entity is named 'CartEntity'.
         entityManager.getEntityManager().createQuery("DELETE FROM CartEntity").executeUpdate(); 
-        
-        // 4. DELETE ADDRESS ENTITY (Child of Customer) 
-        // Assumes your Address entity is named 'AddressEntity'.
-        entityManager.getEntityManager().createQuery("DELETE FROM AddressEntity").executeUpdate(); 
-        
-        // 5. DELETE MENU ITEM ENTITY (New required step - Child of Restaurant) ⬅️ FIX FOR CURRENT ERROR
-        // Assumes your Menu Item entity is named 'MenuItemEntity'.
         entityManager.getEntityManager().createQuery("DELETE FROM MenuItemEntity").executeUpdate(); 
         
-        // 6. Delete from OrdersEntity (Child of DeliveryAgent, Customer, Restaurant)
-        entityManager.getEntityManager().createQuery("DELETE FROM OrdersEntity").executeUpdate();
+        entityManager.getEntityManager().createQuery("DELETE FROM OrderEntity").executeUpdate();
         
-        // 7. Delete Parent Entities (Now safe to delete all parents)
         entityManager.getEntityManager().createQuery("DELETE FROM DeliveryAgentEntity").executeUpdate();
         entityManager.getEntityManager().createQuery("DELETE FROM CustomerEntity").executeUpdate();
-        entityManager.getEntityManager().createQuery("DELETE FROM RestaurantEntity").executeUpdate(); // <<-- NOW SAFE
+        entityManager.getEntityManager().createQuery("DELETE FROM RestaurantEntity").executeUpdate(); 
         
-        entityManager.flush(); // Commit the cleanup before setup starts
+        entityManager.flush(); 
         
-        // === 1. Setup minimal dependencies for OrdersEntity ===
         mockCustomer = new CustomerEntity();
         mockCustomer.setName("TestCustomer");
         mockCustomer.setEmail("cust@test.com");
         mockCustomer.setPhone("9998887777");
+        mockCustomer.setPassword("securepass123"); 
         mockCustomer = entityManager.persistAndFlush(mockCustomer);
         
         mockRestaurant = new RestaurantEntity();
@@ -85,7 +70,6 @@ class DeliveryAgentRepositoryTest {
         mockRestaurant.setEmail("rest@test.com");
         mockRestaurant = entityManager.persistAndFlush(mockRestaurant);
         
-        // === 2. Setup Delivery Agents (including all NOT NULL fields) ===
         agentAvailable = new DeliveryAgentEntity();
         agentAvailable.setName("Agent One");
         agentAvailable.setEmail("agent1@test.com");
@@ -108,7 +92,6 @@ class DeliveryAgentRepositoryTest {
         agentBusy.setRating(4.0);
         agentBusy = entityManager.persistAndFlush(agentBusy);
         
-        // === 3. Persist a linked Order ===
         OrderEntity linkedOrder = new OrderEntity(); 
         linkedOrder.setTotalAmount(45.00); 
         linkedOrder.setOrderStatus("DELIVERED");
@@ -118,70 +101,94 @@ class DeliveryAgentRepositoryTest {
         linkedOrder.setOrderDate(LocalDateTime.now());
         linkedOrder = entityManager.persistAndFlush(linkedOrder); 
 
-        // Update the agent's list manually (best practice)
         agentBusy.getOrdersDelivered().add(linkedOrder); 
         entityManager.merge(agentBusy);
 
         entityManager.flush(); 
     }
     
-    // --- AfterEach is now redundant but kept for completeness ---
     @AfterEach
     @Transactional
     void cleanUp() {
-        // Cleanup is now handled effectively in @BeforeEach
+
     }
 
-    // =========================================================================
-    //                            TEST REPOSITORY METHODS
-    // =========================================================================
-
     @Test
-    void countByStatus_ShouldReturnCorrectCount() {
-        // ACT
+    void countByStatus_ShouldReturnCorrectCountForAvailable() {
         long count = agentRepository.countByStatus("AVAILABLE");
         
-        // ASSERT
         assertEquals(1, count, "Should find exactly 1 agent with status AVAILABLE.");
     }
     
     @Test
-    void findByStatus_ShouldReturnCorrectList() {
-        // ACT
-        List<DeliveryAgentEntity> agents = agentRepository.findByStatus("BUSY");
+    void countByStatus_ShouldReturnCorrectCountForBusy() {
+        long count = agentRepository.countByStatus("BUSY");
         
-        // ASSERT
-        assertNotNull(agents);
-        assertEquals(1, agents.size(), "Should find 1 agent with status BUSY.");
+        assertEquals(1, count, "Should find exactly 1 agent with status BUSY.");
     }
     
     @Test
+    void countByStatus_ShouldReturnZeroForNonExistentStatus() {
+        long count = agentRepository.countByStatus("OFFLINE");
+        
+        assertEquals(0, count, "Should find 0 agents with status OFFLINE.");
+    }
+    
+    @Test
+    void findByStatus_ShouldReturnCorrectList() {
+        List<DeliveryAgentEntity> agents = agentRepository.findByStatus("BUSY");
+        
+        assertNotNull(agents);
+        assertThat(agents, hasSize(1));
+        assertEquals(agentBusy.getName(), agents.get(0).getName(), "The returned agent should be the busy agent.");
+        assertEquals(agentBusy.getId(), agents.get(0).getId(), "The returned agent should be the busy agent.");
+
+    }
+    
+    @Test
+    void findByStatus_ShouldReturnEmptyListForNonExistentStatus() {
+        List<DeliveryAgentEntity> agents = agentRepository.findByStatus("OFFLINE");
+        
+        assertNotNull(agents);
+        assertTrue(agents.isEmpty(), "Should return an empty list for non-existent status.");
+    }
+
+    @Test
     void findAllWithOrdersEagerly_ShouldPreventNPlusOne() {
-        // ACT
         List<DeliveryAgentEntity> agents = agentRepository.findAllWithOrdersEagerly();
 
-        // ASSERT 1: Both agents are returned
         assertEquals(2, agents.size(), "Should return all agents.");
 
-        // ASSERT 2: Find the agent with the order and check that the list is loaded
         DeliveryAgentEntity busyAgent = agents.stream()
-            .filter(a -> a.getName().equals("Agent Busy"))
+            .filter(a -> a.getId().equals(agentBusy.getId()))
             .findFirst()
-            .orElseThrow();
+            .orElseThrow(() -> new AssertionError("Busy agent not found in results."));
             
         assertEquals(1, busyAgent.getOrdersDelivered().size(), "Busy agent should have 1 order eagerly loaded.");
+        
+        DeliveryAgentEntity availableAgent = agents.stream()
+            .filter(a -> a.getId().equals(agentAvailable.getId()))
+            .findFirst()
+            .orElseThrow(() -> new AssertionError("Available agent not found in results."));
+            
+        assertTrue(availableAgent.getOrdersDelivered().isEmpty(), "Available agent should have 0 orders loaded.");
     }
     
     @Test
     void findByIdWithOrders_ShouldLoadAgentAndEagerlyFetchOrder() {
-        // ACT
         Optional<DeliveryAgentEntity> result = agentRepository.findByIdWithOrders(agentBusy.getId());
         
-        // ASSERT 1
         assertTrue(result.isPresent(), "Agent should be found.");
         
-        // ASSERT 2: Check Eager Loading
         DeliveryAgentEntity foundAgent = result.get();
         assertEquals(1, foundAgent.getOrdersDelivered().size(), "The order should be eagerly loaded.");
+        assertEquals(agentBusy.getStatus(), foundAgent.getStatus(), "Should be the busy agent.");
+    }
+    
+    @Test
+    void findByIdWithOrders_ShouldReturnEmptyOptionalForNonExistentId() {
+        Optional<DeliveryAgentEntity> result = agentRepository.findByIdWithOrders(999L);
+        
+        assertFalse(result.isPresent(), "Should return empty optional for non-existent ID.");
     }
 }

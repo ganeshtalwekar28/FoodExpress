@@ -11,42 +11,30 @@ import org.springframework.stereotype.Repository;
 import com.ofds.entity.DeliveryAgentEntity;
 
 /**
- * Spring Data JPA Repository for managing DeliveryAgentEntity data.
+ * Repository interface for managing persistence operations (CRUD) for the DeliveryAgentEntity, 
+ * including custom queries for status counts and eager loading of associated orders.
  */
 @Repository
 public interface DeliveryAgentRepository extends JpaRepository<DeliveryAgentEntity, Long>{
 
     /**
-     * Counts the number of agents with a specific status (e.g., "BUSY").
-     *
-     * @param status The status string.
-     * @return The count of agents with that status.
+     * Counts the total number of delivery agents currently matching the specified status.
      */
     long countByStatus(String status);
 
     /**
-     * Retrieves all agents and eagerly fetches the associated `ordersDelivered` collection
-     * using a LEFT JOIN FETCH to prevent N+1 issues when accessing the orders list.
-     *
-     * @return A list of DeliveryAgentEntity objects with eagerly loaded orders.
+     * Retrieves all agents, eagerly loading their list of delivered orders to avoid N+1 issues.
      */
     @Query("SELECT DISTINCT a FROM DeliveryAgentEntity a LEFT JOIN FETCH a.ordersDelivered")
     List<DeliveryAgentEntity> findAllWithOrdersEagerly();
 
     /**
-     * Finds agents based on their status using Spring Data JPA's derived query feature.
-     *
-     * @param status The status string (e.g., "AVAILABLE").
-     * @return A list of agents matching the status.
+     * Finds and returns a list of delivery agents whose current status matches the given status.
      */
     List<DeliveryAgentEntity> findByStatus(String status);
 
     /**
-     * Finds a single agent by ID, eagerly fetching all associated orders.
-     * Used for retrieving detailed agent information.
-     *
-     * @param id The ID of the agent.
-     * @return An Optional containing the DeliveryAgentEntity with orders loaded.
+     * Finds a single agent by ID, eagerly fetching all associated orders for detailed viewing.
      */
     @Query("SELECT a FROM DeliveryAgentEntity a LEFT JOIN FETCH a.ordersDelivered WHERE a.id = :id")
     Optional<DeliveryAgentEntity> findByIdWithOrders(@Param("id") Long id);

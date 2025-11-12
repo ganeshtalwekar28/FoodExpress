@@ -9,6 +9,10 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+/**
+ * Represents the customer's shopping cart persistence model, tracking the items, total amount, 
+ * and associated customer and restaurant.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

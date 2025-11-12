@@ -9,6 +9,10 @@ import java.util.List;
  
 import com.fasterxml.jackson.annotation.JsonManagedReference;
  
+/**
+ * Represents the persistence model for a restaurant, storing its profile, menu details, and associations 
+ * with carts and customer orders.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -46,5 +50,3 @@ public class RestaurantEntity {
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL)
     private List<OrderEntity> orders;
 }
- 
- 

@@ -5,20 +5,22 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Represents a reusable and embeddable entity component that stores the full delivery address and contact details 
+ * for an order or customer.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Embeddable
 public class DeliveryAddress {
     
-    // We break down the name for proper database column mapping
     private String firstName;
     private String lastName;
     
     private String email;
     private String phoneNumber;
     
-    // Address components
     private String address;
     private String state;
     private String city;

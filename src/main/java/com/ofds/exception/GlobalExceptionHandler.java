@@ -10,18 +10,16 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.ofds.dto.DeliveryAgentDTO;
 
-/**
- * This class is a Global Exception Handler for the entire application.
- * The @ControllerAdvice annotation allows it to handle exceptions across all controllers.
- * This way, we don't have to write try-catch blocks in every controller method.
- */
+
 @ControllerAdvice
+/**
+ * Global handler class that centralizes exception handling across all controllers, 
+ * mapping specific custom exceptions to appropriate HTTP status codes.
+ */
 public class GlobalExceptionHandler {
 
     /**
-     * This method handles the DataNotFoundException.
-     * When a DataNotFoundException is thrown anywhere in the application, this method will be called.
-     * It returns a ResponseEntity with the exception message and an HTTP 404 (NOT_FOUND) status.
+     * Handles exceptions where requested data (e.g., entity by ID) could not be found. Maps to HTTP 404 NOT FOUND.
      */
     @ExceptionHandler(DataNotFoundException.class)
     public ResponseEntity<String> handleDataNotFoundException(DataNotFoundException ex) {
@@ -29,8 +27,7 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * This method handles the RecordAlreadyFoundException.
-     * It returns a ResponseEntity with the exception message and an HTTP 409 (CONFLICT) status.
+     * Handles exceptions where an attempt is made to create a record that already exists. Maps to HTTP 409 CONFLICT.
      */
     @ExceptionHandler(RecordAlreadyFoundException.class)
     public ResponseEntity<String> handleRecordAlreadyFound(RecordAlreadyFoundException ex)
@@ -39,8 +36,7 @@ public class GlobalExceptionHandler {
     }
     
     /**
-     * This method handles the NoDataFoundException.
-     * It returns a ResponseEntity with the exception message and an HTTP 404 (NOT_FOUND) status.
+     * Handles exceptions where a query for a list returns no data. Maps to HTTP 404 NOT FOUND.
      */
     @ExceptionHandler(NoDataFoundException.class)
     public ResponseEntity<String> handleNoDataFound(NoDataFoundException ex) 
@@ -49,37 +45,53 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * This is a general-purpose exception handler for any other exceptions that are not specifically handled above.
-     * It logs the exception and returns a generic "Internal Server Error" message with an HTTP 500 status.
-     * This prevents sensitive information from being leaked to the client.
+     * Catches all unhandled exceptions as a fallback and maps them to HTTP 500 INTERNAL SERVER ERROR.
      */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleGeneralException(Exception ex) {
-        // It's a good practice to log the full exception for debugging purposes.
-        // logger.error("An unexpected error occurred", ex);
         return new ResponseEntity<>("An unexpected error occurred. Please try again later.", HttpStatus.INTERNAL_SERVER_ERROR);
     }
     
+    /**
+     * Handles cases where no delivery agents are found, returning an empty list with an HTTP 200 OK status.
+     */
     @ExceptionHandler(AgentListNotFoundException.class)
     public ResponseEntity<List<DeliveryAgentDTO>> handleAgentListNotFound(AgentListNotFoundException ex) {
         return new ResponseEntity<>(Collections.emptyList(), HttpStatus.OK);
     }
 
+    /**
+     * Handles exceptions related to invalid order assignment attempts. Maps to HTTP 400 BAD REQUEST.
+     */
     @ExceptionHandler(AgentAssignmentException.class)
     public ResponseEntity<String> orderAssignmentException(AgentAssignmentException e) {
         String message = e.getMessage();
         return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
     }
 
+    /**
+     * Handles exceptions when a specific order ID cannot be found. Maps to HTTP 404 NOT FOUND.
+     */
     @ExceptionHandler(OrderNotFoundException.class)
     public ResponseEntity<String> orderNotFoundException(OrderNotFoundException e) {
         String message = e.getMessage();
         return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
     }
 
+    /**
+     * Handles exceptions when necessary dashboard metrics or aggregated data cannot be retrieved. Maps to HTTP 404 NOT FOUND.
+     */
     @ExceptionHandler(MetricsDataNotFound.class)
     public ResponseEntity<String> metricsDataNotFound(MetricsDataNotFound e){
         String message = e.getMessage();
         return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+    }
+    
+    /**
+     * Handles exceptions when a single specific agent cannot be found. Maps to HTTP 404 NOT FOUND with no body.
+     */
+    @ExceptionHandler(AgentNotFoundException.class)
+    public ResponseEntity<Void> handleAgentNotFoundException(AgentNotFoundException ex) {
+    	return new ResponseEntity<>(HttpStatus.NOT_FOUND);    
     }
 }

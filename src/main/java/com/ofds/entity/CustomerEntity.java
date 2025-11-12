@@ -6,8 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
+/**
+ * Represents the persistence model for a registered customer, storing their login credentials and profile details.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

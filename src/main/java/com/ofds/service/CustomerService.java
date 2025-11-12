@@ -14,6 +14,10 @@ import com.ofds.exception.NoDataFoundException;
 import com.ofds.exception.RecordAlreadyFoundException;
 import com.ofds.repository.CustomerRepository;
 
+/**
+ * Service class for handling all business logic related to customer data, 
+ * including retrieval, registration, and data mapping.
+ */
 @Service
 public class CustomerService {
 
@@ -23,7 +27,9 @@ public class CustomerService {
     @Autowired
     private ModelMapper modelMapper;
     
-    // get all customers
+    /**
+     * Retrieves all customer records from the database and maps them to a list of DTOs.
+     */
     public List<CustomerDTO> getCustomerData() throws NoDataFoundException {
         List<CustomerEntity> entityList = custRepo.findAll();
 
@@ -39,7 +45,9 @@ public class CustomerService {
         return dtoList;
     }
     
-    //signing up new user
+    /**
+     * Registers a new customer after verifying that a record with the given email does not already exist.
+     */
     public CustomerDTO insertCustomerData(CustomerDTO customerDTO) throws RecordAlreadyFoundException {
         Optional<CustomerEntity> existing = custRepo.findByEmail(customerDTO.getEmail());
 
@@ -55,24 +63,14 @@ public class CustomerService {
         return responseDTO;
     }
 
+    /**
+     * Retrieves a specific customer record by their ID and maps it to a DTO.
+     */
     public CustomerDTO getCustomerById(Long id) throws NoDataFoundException {
         CustomerEntity entity = custRepo.findById(id)
             .orElseThrow(() -> new NoDataFoundException("Customer not found with id: " + id));
         CustomerDTO dto = modelMapper.map(entity, CustomerDTO.class);
         
-//        List<AddressDTO> addressDTOs = new ArrayList<>();
-//        if (entity.getAddresses() != null) {
-//            addressDTOs = entity.getAddresses().stream()
-//                .map(addressEntity -> modelMapper.map(addressEntity, AddressDTO.class))
-//                .collect(Collectors.toList());
-//        }
-//        dto.setAddresses(addressDTOs);
-        
         return dto;
     }
-
-    
-
-
 }
-

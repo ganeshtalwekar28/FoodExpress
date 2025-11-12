@@ -8,6 +8,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Represents the persistence model for a delivery agent, storing their credentials, status, 
+ * performance metrics, and current/historical order assignments.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

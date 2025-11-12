@@ -19,6 +19,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents the core persistence model for a customer order, tracking all transaction details,
+ * associated entities (customer, restaurant, agent), and payment information.
+ */
 @Entity
 @Table(name = "orders")
 @Data
@@ -32,7 +36,7 @@ public class OrderEntity {
 
     @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)
-    private CustomerEntity user; // Using CustomerEntity as the User/Customer
+    private CustomerEntity user; 
 
     @ManyToOne
     @JoinColumn(name = "restaurant_id", nullable = false)
@@ -52,10 +56,10 @@ public class OrderEntity {
     private DeliveryAgentEntity agent;
     
     @Column(name = "order_status")
-    private String orderStatus; // e.g., "Confirmed"
+    private String orderStatus; 
     
     @Column(name = "payment_status")
-    private String paymentStatus; // e.g., "Paid"
+    private String paymentStatus; 
     
     @Column(name = "payment_method")
     private String paymentMethod = "Razorpay";
@@ -76,5 +80,5 @@ public class OrderEntity {
     private List<OrderItemEntity> items;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY) // LAZY is fine with FETCH JOIN
-    private List<OrderItemEntity> itemList = new ArrayList<>(); // Ensure initialization
+    private List<OrderItemEntity> itemList = new ArrayList<>();
 }

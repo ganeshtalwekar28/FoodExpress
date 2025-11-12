@@ -28,7 +28,6 @@ import java.util.Date; // For setting issued and expiration times
 public class JwtUtils { 
 	 String secret = "123456789012345678901234567890123456"; // 36 characters
 	
-	 
 	 // Method to generate a JWT token for the given username. 
 	public String generateToken (String username) {
 		return Jwts.builder()  // Starts building the JWT token.
@@ -48,16 +47,11 @@ public class JwtUtils {
 		           .compact();
 	}
 	
-	
-	
-	
 	// Method to extract the username (subject) from a JWT token.
 	 public   String extractUsername(String token) {
-		 
 		 // Begins building the JWT parser.
 		return Jwts.parserBuilder()
-				
-				 // Sets the signing key used to validate the token's signature.
+				// Sets the signing key used to validate the token's signature.
 				.setSigningKey(secret.getBytes())
 				
 				// Builds the parser instance.
@@ -75,10 +69,7 @@ public class JwtUtils {
 	
 	 // Method to validate the token by comparing its username with the expected user.
 	 public boolean validateToken (String token, UserDetails userDetails) {
-		 
-		 
 		 // Returns true if the token's username matches the user's username.
 		 return extractUsername(token).equals(userDetails.getUsername());
 	 }
-
 }
