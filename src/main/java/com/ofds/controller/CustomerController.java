@@ -24,6 +24,7 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping ("/api/auth")
 public class CustomerController {
+	
 	@Autowired
 	CustomerService custServiceObj;
 
