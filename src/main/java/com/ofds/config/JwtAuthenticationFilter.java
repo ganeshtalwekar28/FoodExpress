@@ -17,22 +17,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-/*
- * 
- * The JwtAuthenticationFilter is a custom security filter that runs once per request 
- * and checks for a valid JWT token in the Authorization header of incoming HTTP 
- * requests. If a token is present and starts with "Bearer ", 
- * it extracts the token and retrieves the associated username using JwtUtils. 
- * It then loads the user's details from the database via CustomUserDetailsService 
- * and validates the token. If the token is valid and the user is not already 
- * authenticated, it creates an authentication object and sets it in the 
- * Spring Security context, effectively logging the user in for that request. 
- * Finally, it passes control to the next filter in the chain, allowing the request 
- * to proceed. This mechanism ensures that only authenticated users with valid 
- * tokens can access protected resources.
- * 
- * 
- */
+
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter{
 	
@@ -87,9 +72,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
 		 }
 		 
 	 }
-	 //Forwards the request to the next chain of request, after authentication or not authentication.
-	 //If Authenticate, moves the control to the next action or next request or the request which it came for.
-	 // Else throws the exception.
+
 	 filterChain.doFilter(request, response);
 		
 	} 

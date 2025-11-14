@@ -12,10 +12,6 @@ import com.ofds.dto.DeliveryAgentDTO;
 
 
 @ControllerAdvice
-/**
- * Global handler class that centralizes exception handling across all controllers, 
- * mapping specific custom exceptions to appropriate HTTP status codes.
- */
 public class GlobalExceptionHandler {
 
     /**

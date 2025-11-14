@@ -24,7 +24,6 @@ public class PaymentService {
      */
     public RazorpayOrderResponse createRazorpayOrder(Double amount, String currency) throws RazorpayException {
         JSONObject orderRequest = new JSONObject();
-        // Razorpay expects amount in the smallest currency unit (e.g., paise for INR), hence the conversion and casting to int.
         orderRequest.put("amount", amount.intValue()); 
         orderRequest.put("currency", currency);
         orderRequest.put("payment_capture", 1); // Auto capture the payment
@@ -33,7 +32,6 @@ public class PaymentService {
 
         RazorpayOrderResponse response = new RazorpayOrderResponse();
         
-        // Maps the required fields from the Razorpay Order object to the custom DTO.
         response.setOrderId((String) razorpayOrder.get("id"));
         response.setCurrency((String) razorpayOrder.get("currency"));
         response.setAmountInPaise(((Integer) razorpayOrder.get("amount")).longValue());

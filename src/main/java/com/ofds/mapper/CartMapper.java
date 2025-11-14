@@ -9,10 +9,6 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Utility class responsible for converting data between the CartEntity persistence model 
- * and the CartDTO data transfer object for display.
- */
 @Component
 public class CartMapper {
 

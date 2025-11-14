@@ -15,11 +15,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-/**
- * Unit Test class for AdminDashboardService.
- * Focuses on isolating and testing the service's aggregation logic and DTO mapping
- * by mocking all repository count/sum methods. (Horizontal Testing)
- */
 @ExtendWith(MockitoExtension.class)
 class AdminDashboardServiceTest {
 
@@ -45,12 +40,8 @@ class AdminDashboardServiceTest {
 
     @BeforeEach
     void setUp() {
-        // No complex setup needed; we mock all repository method calls directly in tests.
+    	
     }
-
-    // =========================================================================
-    // Test Cases for getDashboardData() - Happy Path
-    // =========================================================================
 
     @Test
     void getDashboardData_ShouldReturnCorrectMetrics_WhenAllDataExists() {
@@ -100,10 +91,6 @@ class AdminDashboardServiceTest {
         verify(ordersRepository, times(1)).sumTotalAmountByStatusDelivered();
     }
 
-    // =========================================================================
-    // Test Cases for Edge Cases (Null/Zero Values)
-    // =========================================================================
-
     @Test
     void getDashboardData_ShouldHandleZeroCountsCorrectly() {
         // ARRANGE
@@ -114,7 +101,6 @@ class AdminDashboardServiceTest {
         when(ordersRepository.count()).thenReturn(0L);
         when(ordersRepository.countByOrderStatus(anyString())).thenReturn(0L);
         
-        // Mock revenue to return null (which is common for SUM() on empty sets)
         when(ordersRepository.sumTotalAmountByStatusDelivered()).thenReturn(null);
 
         // ACT
@@ -139,7 +125,6 @@ class AdminDashboardServiceTest {
     @Test
     void getDashboardData_ShouldHandleNullRevenue_WhenNoDeliveredOrdersExist() {
         // ARRANGE
-        // Provide some valid counts (stubbing all 'count' and 'countByStatus' calls)
         when(customerRepository.count()).thenReturn(1L);
         when(restaurantRepository.count()).thenReturn(1L);
         when(agentRepository.count()).thenReturn(1L);
@@ -162,11 +147,10 @@ class AdminDashboardServiceTest {
         assertNotNull(result);
         assertEquals(10L, result.getTotalOrders());
         assertEquals(0L, result.getDeliveredOrders());
-        // Crucial check: Ensure the service logic handles the null gracefully
         assertEquals(0.0, result.getTotalRevenue(), "Total Revenue must be 0.0 when sumTotalAmountByStatusDelivered returns null.");
         
         // Verify the calls
-        verify(ordersRepository, times(1)).countByOrderStatus(STATUS_PLACED); // Verify the previously unstubbed call
+        verify(ordersRepository, times(1)).countByOrderStatus(STATUS_PLACED); 
         verify(ordersRepository, times(1)).sumTotalAmountByStatusDelivered();
     }
 }

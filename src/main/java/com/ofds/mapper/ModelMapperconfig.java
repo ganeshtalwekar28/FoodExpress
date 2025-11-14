@@ -6,10 +6,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 
-/**
- * Configuration class responsible for creating and configuring the singleton instance 
- * of the ModelMapper for use across the application's DTO-Entity mappers.
- */
 @Configuration
 public class ModelMapperconfig {
 

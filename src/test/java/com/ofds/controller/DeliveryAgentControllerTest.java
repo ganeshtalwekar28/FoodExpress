@@ -1,12 +1,14 @@
 package com.ofds.controller;
 
-import com.ofds.config.JwtUtils;
-import com.ofds.dto.DeliveryAgentDTO;
-import com.ofds.service.CustomerService; 
-import com.ofds.service.CustomerUserDetailsService;
-import com.ofds.service.DeliveryAgentService;
-import com.ofds.exception.AgentListNotFoundException;
-import com.ofds.exception.AgentNotFoundException;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.Collections;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,18 +16,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-// Removed unused imports: User, UserDetails, UserDetailsService
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Collections;
-import java.util.List;
-
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import com.ofds.config.JwtUtils;
+import com.ofds.dto.DeliveryAgentDTO;
+import com.ofds.exception.AgentNotFoundException;
+import com.ofds.service.CustomerService;
+import com.ofds.service.CustomerUserDetailsService;
+import com.ofds.service.DeliveryAgentService;
 
 @WebMvcTest(DeliveryAgentController.class)
 class DeliveryAgentControllerTest {
@@ -63,12 +61,7 @@ class DeliveryAgentControllerTest {
                 102L, "A002", "Agent Beta", "333-4444", "beta@ofds.com", "BUSY",
                 5001L, 10.0, 250.0, 25, 4.5, Collections.emptyList());
 
-        // REMOVED: Configuration for the now-removed generic UserDetailsService mock.
     }
-
-    // =========================================================================
-    // Test Cases for GET /api/auth/admin/delivery-agents (listAllDeliveryAgents)
-    // =========================================================================
 
     @Test
     void listAllDeliveryAgents_ShouldReturnAllAgentsAnd200OK() throws Exception {
@@ -98,10 +91,6 @@ class DeliveryAgentControllerTest {
                 .andExpect(jsonPath("$.length()").value(0));
     }
 
-    // =========================================================================
-    // Test Cases for GET /api/auth/admin/delivery-agents/available (getAvailableDeliveryAgents)
-    // =========================================================================
-
     @Test
     void getAvailableDeliveryAgents_ShouldReturnOnlyAvailableAgents() throws Exception {
         // ARRANGE
@@ -116,10 +105,6 @@ class DeliveryAgentControllerTest {
                 .andExpect(jsonPath("$.length()").value(1))
                 .andExpect(jsonPath("$[0].status").value("AVAILABLE"));
     }
-
-    // =========================================================================
-    // Test Cases for GET /api/auth/admin/delivery-agents/{agentId} (getAgentDetails)
-    // =========================================================================
 
     @Test
     void getAgentDetails_ShouldReturnDetails_WhenAgentFound() throws Exception {
@@ -137,7 +122,7 @@ class DeliveryAgentControllerTest {
     
     @Test
     void getAgentDetails_ShouldReturn404_WhenAgentNotFound() throws Exception {
-        // ARRANGE: Use AgentNotFoundException as per controller method signature
+        // ARRANGE
         when(deliveryAgentService.getAgentDetails(anyLong()))
                 .thenThrow(new AgentNotFoundException("Agent not found.")); 
 

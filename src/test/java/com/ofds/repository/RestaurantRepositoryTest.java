@@ -1,16 +1,16 @@
 package com.ofds.repository;
 
-import com.ofds.entity.RestaurantEntity;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import java.util.List;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import com.ofds.entity.RestaurantEntity;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -42,13 +42,6 @@ class RestaurantRepositoryTest {
     assertThat(found).isPresent();
     assertThat(found.get().getEmail()).isEqualTo("idli@express.com");
   }
-
-//  @Test
-//  void findByEmail_shouldReturnList() {
-//    List<RestaurantEntity> found = restaurantRepo.findByEmail("idli@express.com");
-//    assertThat(found).isNotEmpty();
-//    assertThat(found.get(0).getName()).isEqualTo("Idli Express");
-//  }
 
   @Test
   void findByEmailAndPassword_shouldReturnRestaurant() {

@@ -15,14 +15,8 @@ import com.ofds.entity.MenuItemEntity;
 @Repository
 public interface MenuItemRepository extends JpaRepository<MenuItemEntity, Long> {
 
-    /**
-     * Finds and returns a specific MenuItemEntity based on its primary ID.
-     */
+
 	Optional<MenuItemEntity> findById(Long id);
-	
-    /**
-     * Finds a list of MenuItemEntity objects whose name contains the specified string, 
-     * performing a case-insensitive search.
-     */
+
 	List<MenuItemEntity> findByNameContainingIgnoreCase(String name);
 }

@@ -8,10 +8,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;
 
-/**
- * Utility class responsible for converting data between the OrderEntity persistence model 
- * and various OrderDTO and OrderResponse data transfer objects.
- */
 @Component
 public class OrderMapper {
     

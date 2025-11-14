@@ -21,11 +21,6 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-/**
- * Unit Test class for DeliveryAgentService.
- * Focuses on isolating and testing the service's business logic using Mockito 
- * to mock the underlying repository dependencies. (Horizontal Testing)
- */
 @ExtendWith(MockitoExtension.class)
 class DeliveryAgentServiceTest {
 
@@ -38,7 +33,6 @@ class DeliveryAgentServiceTest {
     @InjectMocks
     private DeliveryAgentService deliveryAgentService;
 
-    // --- Helper Entities for Mocking ---
 
     private DeliveryAgentEntity availableAgent1;
     private DeliveryAgentEntity busyAgent2;
@@ -55,7 +49,7 @@ class DeliveryAgentServiceTest {
         availableAgent1.setTotalDeliveries(5);
         availableAgent1.setTotalEarnings(50.0);
         availableAgent1.setRating(4.5);
-        availableAgent1.setOrdersDelivered(Collections.emptyList()); // No active orders
+        availableAgent1.setOrdersDelivered(Collections.emptyList()); 
 
         // Setup a mock busy agent
         busyAgent2 = new DeliveryAgentEntity();
@@ -73,10 +67,6 @@ class DeliveryAgentServiceTest {
         activeOrder.setOrderStatus("OUT FOR DELIVERY");
         busyAgent2.setOrdersDelivered(List.of(activeOrder));
     }
-
-    // =========================================================================
-    // Test Cases for findAvailableDeliveryAgents()
-    // =========================================================================
 
     @Test
     void findAvailableDeliveryAgents_ShouldReturnAvailableAgents() {
@@ -115,10 +105,6 @@ class DeliveryAgentServiceTest {
         assertEquals("Agent Data Not found in the Database...", thrown.getMessage());
         verify(agentRepository, times(1)).findByStatus("AVAILABLE");
     }
-
-    // =========================================================================
-    // Test Cases for getAgentDetails()
-    // =========================================================================
 
     @Test
     void getAgentDetails_ShouldReturnDetails_WhenAgentIsAvailable() {
@@ -187,14 +173,9 @@ class DeliveryAgentServiceTest {
         verifyNoInteractions(orderRepository);
     }
     
-    // =========================================================================
-    // Test Cases for findAllDeliveryAgents() - Complex Deduplication/Verification Logic
-    // =========================================================================
-    
     @Test
     void findAllDeliveryAgents_ShouldReturnAllAgents_AndHandleDeduplicationAndActiveOrderCheck() {
         // ARRANGE
-        // Scenario 1: Agent 103 (Busy) with an active order (5002) - creates two rows in eager fetch
         OrderEntity activeOrder3 = new OrderEntity();
         activeOrder3.setId(5002L);
         activeOrder3.setOrderStatus("OUT FOR DELIVERY");
@@ -205,22 +186,15 @@ class DeliveryAgentServiceTest {
         busyAgent3.setStatus("BUSY");
         busyAgent3.setOrdersDelivered(List.of(activeOrder3));
         
-        // The JPA eager fetch often returns duplicate rows for the same agent if they have multiple orders
-        // or just one row with the order details. Let's simulate the issue that the code is trying to solve.
         List<DeliveryAgentEntity> rawRows = Arrays.asList(
-            availableAgent1, // Agent 101 (Available)
-            busyAgent2,      // Agent 102 (Busy)
-            busyAgent3       // Agent 103 (Busy, has active order 5002)
+            availableAgent1, 
+            busyAgent2,     
+            busyAgent3     
         );
 
         when(agentRepository.findAllWithOrdersEagerly()).thenReturn(rawRows);
-        
-        // Mock the explicit check for active orders for the second pass (crucial part of the service logic)
-        // Agent 101: Available -> No active order
         when(orderRepository.findActiveOrderByAgentId(101L)).thenReturn(Optional.empty());
-        // Agent 102: Busy -> Active order 5001
         when(orderRepository.findActiveOrderByAgentId(102L)).thenReturn(Optional.of(activeOrder));
-        // Agent 103: Busy -> Active order 5002
         when(orderRepository.findActiveOrderByAgentId(103L)).thenReturn(Optional.of(activeOrder3));
 
 
@@ -230,7 +204,7 @@ class DeliveryAgentServiceTest {
 
         // ASSERT
         assertNotNull(result);
-        assertEquals(3, result.size()); // Ensure deduplication worked (3 unique agents)
+        assertEquals(3, result.size()); 
         
         // Verify Agent 101 (Available)
         DeliveryAgentDTO dto1 = result.stream().filter(d -> d.getId().equals(101L)).findFirst().orElseThrow();

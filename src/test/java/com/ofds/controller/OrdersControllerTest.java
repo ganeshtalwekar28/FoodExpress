@@ -1,20 +1,20 @@
 package com.ofds.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ofds.config.JwtUtils; // Required import for security mock
+import com.ofds.config.JwtUtils; 
 import com.ofds.dto.AgentAssignmentRequestDTO;
 import com.ofds.dto.DeliveryAgentDTO;
 import com.ofds.entity.DeliveryAgentEntity;
 import com.ofds.entity.OrderEntity;
 import com.ofds.exception.AgentAssignmentException;
 import com.ofds.exception.OrderNotFoundException;
-import com.ofds.service.CustomerService; // Required import for security mock
-import com.ofds.service.CustomerUserDetailsService; // Required import for security mock
+import com.ofds.service.CustomerService; 
+import com.ofds.service.CustomerUserDetailsService; 
 import com.ofds.service.OrdersService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration; // Import for exclusion
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration; 
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -37,7 +37,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 
 @WebMvcTest(
     controllers = OrdersController.class,
-    excludeAutoConfiguration = {SecurityAutoConfiguration.class} // Exclude security auto-config for clean tests
+    excludeAutoConfiguration = {SecurityAutoConfiguration.class} 
 )
 class OrdersControllerTest {
 
@@ -120,7 +120,7 @@ class OrdersControllerTest {
         AgentAssignmentRequestDTO request = new AgentAssignmentRequestDTO(nonExistentId, MOCK_AGENT_ID);
         
         when(ordersService.assignAgent(eq(nonExistentId), anyLong()))
-                .thenThrow(new OrderNotFoundException("Order details not found for ID : " + nonExistentId)); // Use OrderNotFoundException as per controller
+                .thenThrow(new OrderNotFoundException("Order details not found for ID : " + nonExistentId)); 
 
         // ACT & ASSERT
         mockMvc.perform(put(BASE_PATH + "/admin/assign")
@@ -163,7 +163,7 @@ class OrdersControllerTest {
         String deliveryPayload = objectMapper.writeValueAsString(
             new HashMap<String, Object>() {
 				private static final long serialVersionUID = 7933830945185562957L; {
-                put("agentId", MOCK_AGENT_ID.intValue()); // Use .intValue() to match JSON behavior
+                put("agentId", MOCK_AGENT_ID.intValue()); 
             }}
         );
         
@@ -173,7 +173,7 @@ class OrdersControllerTest {
         mockMvc.perform(put(BASE_PATH + "/admin/{orderId}/deliver", MOCK_ORDER_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(deliveryPayload)
-                .with(user("admin").roles("ADMIN")) // Test using ADMIN role access
+                .with(user("admin").roles("ADMIN")) 
                 .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.orderStatus").value("DELIVERED"))

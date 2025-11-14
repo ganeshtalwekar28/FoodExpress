@@ -9,10 +9,6 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Utility class responsible for converting data between the RestaurantEntity persistence model 
- * and the RestaurantDTO data transfer object for client consumption.
- */
 @Component
 public class RestaurantMapper {
 

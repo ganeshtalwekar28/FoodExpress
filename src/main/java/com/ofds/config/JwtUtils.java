@@ -1,32 +1,17 @@
 package com.ofds.config;
 
-import io.jsonwebtoken.Jwts; // Main utility class for building and parsing JWTs
-import io.jsonwebtoken.SignatureAlgorithm; // Enum for specifying the signing algorithm
-import io.jsonwebtoken.security.Keys; // Utility for generating secure keys
-import org.springframework.stereotype.Component; // Marks the class as a Spring-managed bean
-import org.springframework.security.core.userdetails.UserDetails; // Interface for user details
+import io.jsonwebtoken.Jwts; 
+import io.jsonwebtoken.SignatureAlgorithm; 
+import io.jsonwebtoken.security.Keys; 
+import org.springframework.stereotype.Component;
+import org.springframework.security.core.userdetails.UserDetails; 
 
 import java.nio.charset.StandardCharsets;
-import java.util.Date; // For setting issued and expiration times
+import java.util.Date; 
 
-/*
- * 
- * This JwtUtils class is a Spring component that provides utility methods for 
- * handling JSON Web Tokens (JWT) in a secure authentication system. It uses a 
- * 36-character secret key to sign and verify tokens with the HMAC SHA-256 algorithm.
- * The generateToken method creates a JWT for a given username, setting its subject,
- * issue time, and expiration time (10 hours from issuance). 
- * The extractUsername method parses a token to retrieve the embedded username, 
- * ensuring the token was signed with the correct key. Finally, the validateToken
- * method checks whether the token's username matches the expected user, 
- * confirming its authenticity and integrity. This class plays a critical role 
- * in managing stateless authentication in a Spring-based application.
- * 
- * 
- */
 @Component
 public class JwtUtils { 
-	 String secret = "123456789012345678901234567890123456"; // 36 characters
+	 String secret = "xZ91jFcvxc5OADGk6kQVJzUUUS3I4ax9UAv3"; // 36 characters
 	
 	 // Method to generate a JWT token for the given username. 
 	public String generateToken (String username) {

@@ -21,9 +21,6 @@ public class AdminDashboardController {
 
     private final AdminDashboardService dashboardService;
 
-    /**
-     * Fetches all key metrics and summary data needed to display the Admin dashboard.
-     */
     @GetMapping()
     public ResponseEntity<AdminDashboardDTO> getAdminDashboardMetrics() throws MetricsDataNotFound {
         AdminDashboardDTO metrics = dashboardService.getDashboardData();

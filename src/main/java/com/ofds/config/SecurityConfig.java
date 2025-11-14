@@ -33,23 +33,18 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                // FIX: Added "/api/restaurants/**" to permit access to all sub-paths
-                // under /api/restaurants for unauthenticated requests (login/registration).
                 .requestMatchers(
                     "/auth/login",
                     "/auth/register",
                     "/api/auth/**",
                     "/swagger-ui/**",
+                    "/swagger-ui.html",
                     "/v3/api-docs/**",
                     "/swagger-resources/**",
                     "/webjars/**",
-                    "/actuator/**"
+                    "/actuator/**",
+                    "/actuator/info/"
                  ).permitAll()
-                
-                // Note: The /api/auth/** matcher below is redundant and potentially confusing
-                // since the line above already permits it. I will leave it for now
-                // but recommend removing it if it's meant to be secured later.
-                // If it is meant to be secured, move it above the permitAll() lines.
                 .requestMatchers("/api/auth/**").authenticated()
                 .anyRequest().authenticated()
             )

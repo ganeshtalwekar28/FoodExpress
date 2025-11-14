@@ -22,13 +22,6 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Long> {
      */
     List<OrderEntity> findByUserIdOrderByOrderDateDesc(Long userId);
     
-
-    /**
-     * Retrieves all orders with full details (Customer, Restaurant, Agent, Items)
-     * using FETCH JOIN to prevent LazyInitializationException when mapping to DTOs.
-     *
-     * @return A list of all OrdersEntity objects with eagerly loaded associations.
-     */
     @Query("SELECT DISTINCT o FROM OrderEntity o " +
             "JOIN FETCH o.user c " +
             "JOIN FETCH o.restaurant r " +

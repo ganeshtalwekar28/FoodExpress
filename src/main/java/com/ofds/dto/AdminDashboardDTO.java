@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
  * Data Transfer Object (DTO) for conveying essential metrics to the Admin Dashboard UI.
  */
 @Data
-@NoArgsConstructor // Required for serialization/deserialization (e.g., JSON conversion)
-@AllArgsConstructor // Used for explicit construction in the service layer
+@NoArgsConstructor 
+@AllArgsConstructor 
 public class AdminDashboardDTO {
 	
 	private long totalCustomers;

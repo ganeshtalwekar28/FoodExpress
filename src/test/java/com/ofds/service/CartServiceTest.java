@@ -19,10 +19,10 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class) // ✅ Use MockitoExtension
+@ExtendWith(MockitoExtension.class) 
 class CartServiceTest {
 
-    @InjectMocks // ✅ Inject service with mocks
+    @InjectMocks 
     private CartService cartService;
 
     @Mock private CartRepository cartRepository;
@@ -64,12 +64,12 @@ class CartServiceTest {
         cart.setItemCount(2);
         cart.setTotalAmount(100.0);
 
-        cartDTO = new CartDTO(); // ✅ Stub DTO
+        cartDTO = new CartDTO();
     }
 
     @Test
     void testGetCartByCustomerId() throws DataNotFoundException {
-        when(customerRepository.findById(anyLong())).thenReturn(Optional.of(customer)); // ✅ Use anyInt()
+        when(customerRepository.findById(anyLong())).thenReturn(Optional.of(customer)); 
         when(cartRepository.findByCustomer(any())).thenReturn(Optional.of(cart));
         when(cartMapper.toDTO(any())).thenReturn(cartDTO);
 
@@ -90,12 +90,12 @@ class CartServiceTest {
         CartEntity newCart = new CartEntity();
         newCart.setCustomer(customer);
         newCart.setRestaurant(restaurant);
-        newCart.setItems(new ArrayList<>()); // ✅ Important
+        newCart.setItems(new ArrayList<>()); 
         when(cartRepository.save(any())).thenReturn(newCart);
 
         when(cartItemRepository.save(any())).thenAnswer(invocation -> {
             CartItemEntity item = invocation.getArgument(0);
-            item.setId(999L); // simulate DB-generated ID
+            item.setId(999L); 
             return item;
         });
 
@@ -127,7 +127,7 @@ class CartServiceTest {
 
     @Test
     void testUpdateQuantity_RemoveItem() throws DataNotFoundException {
-        cartItem.setQuantity(1); // ✅ Setup for removal
+        cartItem.setQuantity(1); 
         when(customerRepository.findById(anyLong())).thenReturn(Optional.of(customer));
         when(cartRepository.findByCustomer(any())).thenReturn(Optional.of(cart));
         when(cartItemRepository.findById(anyLong())).thenReturn(Optional.of(cartItem));

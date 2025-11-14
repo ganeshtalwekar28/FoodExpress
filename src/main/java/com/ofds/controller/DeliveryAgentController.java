@@ -17,17 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-/**
- * REST controller for managing Delivery Agent information.
- * Handles operations to list all agents, available agents, and fetch detailed agent information.
- */
 @RestController
 @RequestMapping("/api/auth/admin/delivery-agents")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost:4200") 
 public class DeliveryAgentController {
 	
-    // Dependency injected via @RequiredArgsConstructor
     private final DeliveryAgentService deliveryAgentService;
 
     /**

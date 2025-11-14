@@ -55,14 +55,12 @@ class OrdersServiceTest {
     @Mock
     private OrderMapper orderMapper;
     
-    // This mock is needed because the service calls cartService.getMenuItemRepository()
     @Mock
     private MenuItemRepository menuItemRepository;
 
     @Mock
     private DeliveryAgentRepository agentRepository;
 
-    // We mock the service that is a dependency to isolate the OrdersService logic
     @Mock
     private DeliveryAgentService deliveryAgentService;
 
@@ -111,7 +109,7 @@ class OrdersServiceTest {
 
         orderRequest = new OrderRequest();
         orderRequest.setCustomerId(1L);
-        orderRequest.setTotalAmount(236.0); // (100 * 2) + 18% tax
+        orderRequest.setTotalAmount(236.0); 
         orderRequest.setDeliveryAddress("123 Test St");
         orderRequest.setRazorpayOrderId("dummy_order_id");
         orderRequest.setRazorpayPaymentId("dummy_payment_id");
@@ -123,8 +121,6 @@ class OrdersServiceTest {
         orderResponse = new OrderResponse();
         orderResponse.setOrderId(1L);
         orderResponse.setStatus("Placed");
-        
-        // ---------------------------------------------------------------------------------------------
         
         // Available Agent Entity & DTO
         agentAvailable = new DeliveryAgentEntity();
@@ -156,12 +152,12 @@ class OrdersServiceTest {
         placedOrder.setOrderDate(LocalDateTime.now());
         placedOrder.setAgent(null);
         
-     // Order: DELIVERED (For testing deliverOrder idempotency/edge cases)
+        // Order: DELIVERED (For testing deliverOrder idempotency/edge cases)
         deliveredOrder = new OrderEntity();
         deliveredOrder.setId(1002L);
         deliveredOrder.setOrderStatus("DELIVERED");
         deliveredOrder.setTotalAmount(100.00);
-        deliveredOrder.setAgent(agentBusy); // Agent that delivered it
+        deliveredOrder.setAgent(agentBusy); 
         deliveredOrder.setUser(customer);
         deliveredOrder.setRestaurant(restaurant);
         deliveredOrder.setDeliveryAddress("789 Pine Ln");
@@ -176,7 +172,6 @@ class OrdersServiceTest {
         when(restaurantRepository.findById(1L)).thenReturn(Optional.of(restaurant));
         
         // This is the tricky part that was likely failing before
-//        when(cartService.getMenuItemRepository()).thenReturn(menuItemRepository);
         when(menuItemRepository.findById(101L)).thenReturn(Optional.of(menuItem));
         
         // When the service tries to save the order, return our dummy savedOrder
@@ -201,10 +196,6 @@ class OrdersServiceTest {
         verify(cartService, times(1)).clearCart(1L);
     }
         
-    // =========================================================================
-    // Test Cases for getOrderDetails()
-    // =========================================================================
-
     @Test
     void getOrderDetails_ShouldReturnDetailsAndAvailableAgents() {
         // ARRANGE
@@ -252,10 +243,6 @@ class OrdersServiceTest {
         verifyNoInteractions(deliveryAgentService);
     }
     
-    // =========================================================================
-    // Test Cases for assignAgent()
-    // =========================================================================
-
     @Test
     void assignAgent_ShouldSuccessfullyAssignAgentAndUpdateStatuses() {
         // ARRANGE
@@ -317,7 +304,7 @@ class OrdersServiceTest {
     @Test
     void assignAgent_ShouldThrowException_WhenOrderIsNotPlaced() {
         // ARRANGE
-        placedOrder.setOrderStatus("DELIVERED"); // Change state to an invalid one
+        placedOrder.setOrderStatus("DELIVERED"); 
         when(orderRepository.findById(placedOrder.getId()))
                 .thenReturn(Optional.of(placedOrder));
         when(agentRepository.findById(agentAvailable.getId()))
@@ -352,22 +339,18 @@ class OrdersServiceTest {
         verify(agentRepository, never()).save(any());
     }
     
-    // =========================================================================
-    // Test Cases for deliverOrder()
-    // =========================================================================
-
     @Test
     void deliverOrder_ShouldMarkDelivered_UpdateAgentStats_AndSetAgentAvailable() {
         // ARRANGE
         OrderEntity outForDeliveryOrder = new OrderEntity();
         outForDeliveryOrder.setId(1003L);
         outForDeliveryOrder.setOrderStatus("OUT FOR DELIVERY");
-        outForDeliveryOrder.setTotalAmount(200.00); // Higher amount for commission check
-        outForDeliveryOrder.setAgent(agentBusy); // Agent is currently BUSY
+        outForDeliveryOrder.setTotalAmount(200.00); 
+        outForDeliveryOrder.setAgent(agentBusy); 
         
         // Initial agent stats
-        double initialTotalEarnings = agentBusy.getTotalEarnings(); // 50.0
-        int initialTotalDeliveries = agentBusy.getTotalDeliveries(); // 5
+        double initialTotalEarnings = agentBusy.getTotalEarnings(); 
+        int initialTotalDeliveries = agentBusy.getTotalDeliveries(); 
         
         // Expected commission (15% of 200.00) = 30.00
         double expectedCommission = 30.00;
@@ -407,7 +390,7 @@ class OrdersServiceTest {
         OrderEntity unroundedOrder = new OrderEntity();
         unroundedOrder.setId(1004L);
         unroundedOrder.setOrderStatus("OUT FOR DELIVERY");
-        unroundedOrder.setTotalAmount(100.33); // Amount leading to unrounded commission: 15.0495
+        unroundedOrder.setTotalAmount(100.33); 
         unroundedOrder.setAgent(agentBusy); 
 
         // Expected rounded commission (15% of 100.33) = 15.05
@@ -456,7 +439,7 @@ class OrdersServiceTest {
 
         // ACT
         OrderEntity result = assertDoesNotThrow(() -> 
-            ordersService.deliverOrder(unassignedOrder.getId(), 0L)); // Agent ID is irrelevant here
+            ordersService.deliverOrder(unassignedOrder.getId(), 0L)); 
 
         // ASSERT
         assertEquals("DELIVERED", result.getOrderStatus());

@@ -32,7 +32,7 @@ class MenuItemRepositoryTest {
     restaurant.setName("Testaurant");
     restaurant.setEmail("owner@example.com");
     restaurant.setPassword("secret");
-    restaurant = restaurantRepo.save(restaurant); // persist restaurant first
+    restaurant = restaurantRepo.save(restaurant); 
 
     item = new MenuItemEntity();
     item.setName("Idli");
@@ -40,7 +40,7 @@ class MenuItemRepositoryTest {
     item.setImage_url("http://example.com/idli.jpg");
     item.setRestaurant(restaurant);
 
-    item = menuItemRepo.save(item); // persist menu item
+    item = menuItemRepo.save(item); 
   }
 
   @Test

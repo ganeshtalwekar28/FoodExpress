@@ -88,7 +88,6 @@ class OrdersRepositoryTest {
         testRestaurant.setEmail("bistro@test.com");
         testRestaurant.setPassword("restpass");
         testRestaurant.setPhone("3333333333");
-        // NOTE: The address is set here, assuming RestaurantEntity has an 'address' column.
         testRestaurant.setAddress("123 Test St"); 
         testRestaurant.setRating(4.8);
         testRestaurant = entityManager.persistAndFlush(testRestaurant);

@@ -13,17 +13,9 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * CartRepositoryTest.java
- * Tests the custom JpaRepository method: findByCustomer(CustomerEntity customer)
- */
-// FIX: Use @ContextConfiguration to load the main application class.
-// This forces the test environment to use the application's default
-// configuration for finding ALL entities (Customer, Cart, Order, OrderItem, etc.)
 @SpringBootTest
-@ActiveProfiles("test") // Ensures H2 is active if configured in application-test.properties/yaml
+@ActiveProfiles("test") 
 @TestPropertySource(properties = {
-    // Override ddl-auto just in case
     "spring.jpa.hibernate.ddl-auto=create-drop" 
 })
 class CartRepositoryTest {
@@ -37,8 +29,6 @@ class CartRepositoryTest {
 
     @Autowired
     private RestaurantRepository restaurantRepository;
-
-    // -------------------------------------------------------------------------
 
     @Test
     void testFindByCustomer_ShouldReturnCartWhenFound() {

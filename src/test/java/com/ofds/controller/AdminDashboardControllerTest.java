@@ -1,10 +1,10 @@
 package com.ofds.controller;
 
-import com.ofds.config.JwtUtils; // May not be needed if excluded
+import com.ofds.config.JwtUtils; 
 import com.ofds.dto.AdminDashboardDTO;
 import com.ofds.service.AdminDashboardService;
-import com.ofds.service.CustomerService; // May not be needed if excluded
-import com.ofds.service.CustomerUserDetailsService; // May not be needed if excluded
+import com.ofds.service.CustomerService; 
+import com.ofds.service.CustomerUserDetailsService; 
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,7 +71,7 @@ class AdminDashboardControllerTest {
         mockMvc.perform(get("/api/auth/admin/dashboard")
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(user("admin").roles("ADMIN"))) 
-                .andExpect(status().isNotFound()) // Status is confirmed 404
+                .andExpect(status().isNotFound()) 
                 .andExpect(content().string("Admin dashboard metrics data could not be retrieved from the service.")); 
     }
 }

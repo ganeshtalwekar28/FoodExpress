@@ -13,8 +13,5 @@ import java.util.Optional;
 @Repository
 public interface CartRepository extends JpaRepository<CartEntity, Long> {
     
-    /**
-     * Finds and returns a customer's active shopping cart based on their CustomerEntity object.
-     */
     Optional<CartEntity> findByCustomer(CustomerEntity customer);
 }
