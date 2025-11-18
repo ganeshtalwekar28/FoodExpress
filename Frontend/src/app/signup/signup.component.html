@@ -1,0 +1,108 @@
+<app-navbar></app-navbar>
+
+
+<body>
+  <div class="login-wrapper">
+    <div class="container" id="container">
+
+      <!-- Left: Illustration -->
+      <div class="carousel-container"></div>
+
+      <!-- Right: Signup Form -->
+      <div class="form-container">
+        <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+          <h4>Create Your Account</h4>
+
+          <!-- Name Field Wrapper -->
+          <div class="input-field-wrap">
+            <div class="input-group">
+              <i class="bi bi-person"></i>
+              <input type="text" formControlName="name"
+                [placeholder]="submitted && f['name'].errors ? 'Name is required' : 'Full Name'"
+                [class.error]="f['name'].invalid && (f['name'].touched || submitted)" />
+            </div>
+            <!-- Validation Message for Name -->
+            <div *ngIf="f['name'].invalid && (f['name'].touched || submitted)" class="validation-message">
+              <small class="text-danger" *ngIf="f['name'].errors?.['required']">Full name is required.</small>
+              <small class="text-danger" *ngIf="f['name'].errors?.['minlength']">Name must be at least 3 characters.</small>
+            </div>
+          </div>
+
+          <!-- Email Field Wrapper -->
+          <div class="input-field-wrap">
+            <div class="input-group">
+              <i class="bi bi-envelope"></i>
+              <input type="email" formControlName="email"
+                [placeholder]="submitted && f['email'].errors ? 'Enter a valid email address' : 'Email address'"
+                [class.error]="f['email'].invalid && (f['email'].touched || submitted)" />
+            </div>
+            <!-- Validation Message for Email -->
+            <div *ngIf="f['email'].invalid && (f['email'].touched || submitted)" class="validation-message">
+              <small class="text-danger" *ngIf="f['email'].errors?.['required']">Email is required.</small>
+              <small class="text-danger" *ngIf="f['email'].errors?.['email']">Enter a valid email address.</small>
+            </div>
+          </div>
+
+          <!-- Phone Field Wrapper -->
+          <div class="input-field-wrap">
+            <div class="input-group">
+              <i class="bi bi-telephone"></i>
+              <input type="number" formControlName="phone"
+                [placeholder]="submitted && f['phone'].errors ? 'Enter a valid 10-digit phone number' : 'Phone number'"
+                [class.error]="f['phone'].invalid && (f['phone'].touched || submitted)" />
+            </div>
+            <!-- Validation Message for Phone -->
+            <div *ngIf="f['phone'].invalid && (f['phone'].touched || submitted)" class="validation-message">
+              <small class="text-danger" *ngIf="f['phone'].errors?.['required']">Phone number is required.</small>
+              <small class="text-danger" *ngIf="f['phone'].errors?.['pattern'] || f['phone'].errors?.['minlength']">Must be a 10-digit phone number.</small>
+            </div>
+          </div>
+
+          <!-- Password Field Wrapper -->
+          <div class="input-field-wrap">
+            <div class="input-group">
+              <i class="bi bi-key"></i>
+              <input type="password" formControlName="password"
+                [placeholder]="submitted && f['password'].errors ? 'Password must be at least 6 characters' : 'Create password'"
+                [class.error]="f['password'].invalid && (f['password'].touched || submitted)" />
+            </div>
+            <!-- Validation Message for Password -->
+            <div *ngIf="f['password'].invalid && (f['password'].touched || submitted)" class="validation-message">
+              <small class="text-danger" *ngIf="f['password'].errors?.['required']">Password is required.</small>
+              <small class="text-danger" *ngIf="f['password'].errors?.['minlength']">Password must be at least 6 characters.</small>
+            </div>
+          </div>
+
+
+          <!-- Terms & Conditions Checkbox -->
+          <div class="checkbox-container">
+            <input type="checkbox" formControlName="termsAccepted" />
+            <label>I agree to the Terms & Conditions</label>
+          </div>
+          <!-- Note: I assume validation for termsAccepted is handled internally or not required for fixed size. -->
+
+          <!-- Submit Button -->
+          <button type="submit" [disabled]="signupForm.invalid">Sign Up</button>
+
+          <!-- Links -->
+          <div class="form-links">
+            <span>Already have an account?</span>
+            <a [routerLink]="['/login']" id="login">Login</a>
+          </div>
+
+          <!-- Feedback Message --> 
+          <div *ngIf="message" class="mt-3 text-center">
+            <p [ngClass]="message.includes('successfully') ? 'text-success' : 'text-danger'">{{ message }}</p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="showSnackbar" class="snackbar">
+    {{ snackbarMessage }}
+  </div>
+</body>
+
+
+<app-footer></app-footer>

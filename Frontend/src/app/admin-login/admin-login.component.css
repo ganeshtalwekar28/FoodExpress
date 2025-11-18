@@ -1,0 +1,186 @@
+.login-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-image: url('../../../public/adminBG.jpg');
+    font-family: 'Poppins', sans-serif;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.container {
+    display: flex;
+    width: 350px;
+    height: 350px;
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+    border-radius: 20px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    transition: transform 0.6s ease-in-out;
+}
+
+.carousel-container {
+    background-size: cover;
+    background-position: center;
+}
+
+.form-container {
+    width: 100%;
+    padding: 30px 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.058)000;
+}
+
+.form-container h4 {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 30px;
+    color: #ffffff;
+    text-align: center;
+}
+
+.input-group {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.input-group i {
+    position: absolute;
+    top: 50%;
+    left: 12px;
+    transform: translateY(-50%);
+    color: #fc8019;
+    font-size: 1rem;
+}
+
+.input-group i.toggle-btn {
+    position: absolute;
+    top: 0%;
+    left: 90%;
+    transform: translateY(50%);
+    color: #f97316;
+    font-size: 1rem;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px 12px 12px 40px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.input-group input:focus {
+    border-color: #fc8019;
+    outline: none;
+}
+
+.input-group input.error::placeholder {
+    color: #dc3545;
+    font-weight: 500;
+}
+
+button.login-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #f97316;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    margin-top: 10px;
+}
+
+/* button:disabled {
+    background-color: #f5cba7;
+    cursor: not-allowed;
+}
+
+button:hover:not(:disabled) {
+    background-color: #e76f00;
+} */
+
+button.login-btn:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+button.login-btn:hover:not(:disabled) {
+    background-color: #e06d15;
+    transform: scale(1.01);
+}
+
+.social-login {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.social-login button {
+    width: 48%;
+    padding: 10px;
+    font-size: 0.9rem;
+    border-radius: 8px;
+    border: none;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.social-login .google {
+    background-color: #DB4437;
+}
+
+.social-login .facebook {
+    background-color: #4267B2;
+}
+
+.form-links {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 0.95rem;
+}
+
+.form-links a {
+    color: #fc8019;
+    text-decoration: none;
+    font-weight: 500;
+    margin: 0 5px;
+    transition: color 0.3s ease;
+}
+
+.form-links a:hover {
+    color: #e76f00;
+}
+
+.container.active {
+    transform: translateX(-100%);
+}
+
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        width: 90%;
+        height: auto;
+    }
+
+    .carousel-container {
+        height: 200px;
+        width: 100%;
+    }
+
+    .form-container {
+        width: 100%;
+        padding: 30px 20px;
+    }
+}

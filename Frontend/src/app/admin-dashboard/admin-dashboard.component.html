@@ -1,0 +1,114 @@
+<app-admin-header></app-admin-header>
+
+<div class="admin-dashboard-wrapper">
+    <div class="container-fluid px-4 py-4 admin-dashboard">
+        <h2 class="fw-bold mb-4 text-center text-orange">📊 Admin Dashboard</h2>
+
+        
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4">
+
+            
+            <div class="col">
+                <div class="card dashboard-card h-100">
+                    <div class="card-body text-center">
+                        <div class="metric-icon text-secondary">👥</div>
+                        <h6 class="card-title">Total Customers</h6>
+                        <p class="metric-value text-secondary">{{ totalCustomers }}</p>
+                    </div>
+                </div>
+            </div>
+
+            
+            <div class="col">
+                <div class="card dashboard-card h-100">
+                    <div class="card-body text-center">
+                        <div class="metric-icon text-info">🍽️</div>
+                        <h6 class="card-title">Total Restaurants</h6>
+                        <p class="metric-value text-info">{{ totalRestaurants }}</p>
+                    </div>
+                </div>
+            </div>
+
+            
+            <div class="col">
+                <div class="card dashboard-card h-100">
+                    <div class="card-body text-center">
+                        <div class="metric-icon text-success">💰</div>
+                        <h6 class="card-title">Total Revenue</h6>
+                        
+                        <p class="metric-value text-success">₹{{ totalRevenue | number:'1.2-2' }}</p>
+                    </div>
+                </div>
+            </div>
+
+            
+            <div class="col">
+                <div class="card dashboard-card h-100">
+                    <div class="card-body text-center">
+                        <div class="metric-icon text-orange">🧾</div>
+                        <h6 class="card-title">Total Orders</h6>
+                        <p class="metric-value text-orange">{{ totalOrders }}</p>
+                    </div>
+                </div>
+            </div>
+
+            
+            <div class="col">
+                <div class="card dashboard-card h-100">
+                    <div class="card-body text-center">
+                        <div class="metric-icon text-warning">⏳</div>
+                        <h6 class="card-title">Placed Orders</h6>
+                        <p class="metric-value text-warning">{{ placedOrders }}</p>
+                    </div>
+                </div>
+            </div>
+
+            
+            <div class="col">
+                <div class="card dashboard-card h-100">
+                    <div class="card-body text-center">
+                        <div class="metric-icon text-primary">📦</div>
+                        <h6 class="card-title">Delivered Orders</h6>
+                        <p class="metric-value text-primary">{{ deliveredOrders }}</p>
+                    </div>
+                </div>
+            </div>
+
+            
+            <div class="col">
+                <div class="card dashboard-card h-100">
+                    <div class="card-body text-center">
+                        <div class="metric-icon text-primary">👤</div>
+                        <h6 class="card-title">Total Agents</h6>
+                        <p class="metric-value text-primary">{{ totalAgents }}</p>
+                    </div>
+                </div>
+            </div>
+
+            
+            <div class="col">
+                <div class="card dashboard-card h-100">
+                    <div class="card-body text-center">
+                        <div class="metric-icon text-success">✅</div>
+                        <h6 class="card-title">Available Agents</h6>
+                        <p class="metric-value text-success">{{ availableAgents }}</p>
+                    </div>
+                </div>
+            </div>
+
+            
+            <div class="col">
+                <div class="card dashboard-card h-100">
+                    <div class="card-body text-center">
+                        <div class="metric-icon text-danger">🔴</div>
+                        <h6 class="card-title">Busy Agents</h6>
+                        <p class="metric-value text-danger">{{ busyAgents }}</p>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+<app-admin-footer></app-admin-footer>

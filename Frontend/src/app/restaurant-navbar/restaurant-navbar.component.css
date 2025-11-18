@@ -1,0 +1,126 @@
+.admin-header {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 12px 24px;
+    position: relative;
+    z-index: 100;
+}
+
+.admin-header .fs-3 {
+    color: #10b981;
+}
+
+.admin-header h4 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 0;
+}
+
+.admin-header small {
+    font-size: 0.75rem;
+    color: #6b7280;
+}
+
+.admin-header .btn {
+    font-weight: 500;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 0.875rem;
+}
+
+.admin-header .text-muted {
+    font-size: 0.875rem;
+    color: #6b7280 !important;
+}
+
+.admin-header .bi-bell {
+    color: #374151;
+    cursor: pointer;
+}
+
+.admin-header .badge {
+    font-size: 0.6rem;
+    padding: 4px 6px;
+    background-color: #ef4444;
+    color: white;
+    border-radius: 999px;
+}
+
+.foodie-bg {
+    background: linear-gradient(90deg, #ff5722, #ff7043);
+    border-bottom: none;
+}
+
+.admin-header .nav-link {
+    font-weight: 500;
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.admin-header .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.admin-header .nav-link.active {
+    background-color: rgba(255, 255, 255, 0.3);
+    font-weight: 600;
+}
+
+.admin-header .btn {
+    font-weight: 500;
+    border-radius: 6px;
+    padding: 6px 12px;
+}
+
+.admin-header .btn-outline-light {
+    border: 1px solid #fff;
+    color: #fff;
+}
+
+.admin-header .btn-outline-light:hover {
+    background-color: #fff;
+    color: #ff5722;
+}
+
+@media (max-width: 768px) {
+    .admin-header .d-flex {
+        flex-direction: column;
+        gap: 16px;
+        align-items: flex-start;
+    }
+
+    .admin-header .nav-link {
+        padding: 6px 8px;
+        font-size: 0.9rem;
+    }
+
+    .admin-header h4 {
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .admin-header .d-flex {
+        flex-direction: column;
+        gap: 16px;
+        align-items: flex-start;
+    }
+
+    .admin-header .nav-link {
+        padding: 6px 8px;
+        font-size: 0.9rem;
+    }
+
+    .admin-header .btn {
+        font-size: 0.8rem;
+        padding: 5px 10px;
+    }
+
+    .admin-header h4 {
+        font-size: 1.1rem;
+    }
+}

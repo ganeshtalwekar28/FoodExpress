@@ -1,0 +1,70 @@
+<app-navbar></app-navbar>
+
+<div class="container py-5 position-relative"> 
+
+  
+  <div class="menu-header">
+    <a routerLink="/restaurant" class="back-link">
+      <i class="bi bi-arrow-left"></i> &nbsp; Back to Restaurant
+    </a>
+    <h1 class="page-title">Menu</h1>
+  </div>
+
+
+  
+  <header class="text-center mb-5">
+    <h2 class="display-4 fw-bolder mb-2 menu-title">{{restaurantName}}</h2>
+    <p class="lead text-muted menu-tagline">
+      Discover fresh, flavorful, and carefully crafted dishes.
+    </p>
+  </header>
+
+  
+  <div *ngIf="menuItems.length; else noItems" class="row g-5 justify-content-center">
+    <div class="col-sm-10 col-md-6 col-lg-4" *ngFor="let item of menuItems; trackBy: trackByItemId">
+      <div class="menu-card h-100 shadow-lg border-0 bg-white">
+
+        
+        <div class="card-img-wrapper">
+          <img [src]="item.image_url" class="card-img-top" alt="{{ item.name }}" />
+        </div>
+
+        
+        <div class="card-body p-4 d-flex flex-column">
+          <h4 class="card-title fw-bold text-truncate">{{ item.name }}</h4>
+
+          <div class="d-flex justify-content-between align-items-center mt-2 mb-3">
+            <span class="item-price fw-bolder">₹{{ item.price }}</span>
+          </div>
+
+          
+          <button class="btn btn-primary btn-add-to-cart w-100 mt-auto" (click)="addToCart(item)">
+            <i class="bi bi-basket me-2"></i> Add to Cart
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+  <ng-template #noItems>
+    <div class="text-center mt-5 p-5 border rounded-3 bg-light">
+      <h4 class="text-danger mb-3">Menu Unavailable</h4>
+      <p class="text-secondary">We are currently updating our menu. Please check back later or explore other
+        restaurants.</p>
+    </div>
+  </ng-template>
+
+  
+  <div class="text-center mt-5 pt-3">
+    <button class="btn btn-lg btn-secondary px-5 py-3 rounded-pill proceed-btn" (click)="proceedToCart()">
+      Proceed to Cart <i class="bi bi-arrow-right-circle-fill me-2"></i>
+    </button>
+  </div>
+</div>
+
+<div *ngIf="showSnackbar" class="snackbar">
+  {{snackbarMessage}}
+</div>
+
+<app-footer></app-footer>

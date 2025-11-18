@@ -1,0 +1,55 @@
+<div class="container mt-4" *ngIf="agent">
+    <div class="mb-3">
+                <button class="btn btn-outline-secondary back-button" (click)="goBack()">
+                    ← Back to Agent List
+                </button>
+    </div>
+        
+    <h3 class="mb-4 text-center">Welcome {{ agent.name }}</h3>
+        
+    <div class="row mb-4" style="min-height: 320px;">
+                
+        <div class="col-md-6">
+            <div class="card p-3 shadow-sm h-100">  
+                <h5 class="mb-3">👤 Personal Details</h5>
+                <p><strong>Agent ID : </strong> {{ agent.agentID }}</p>
+                <p><strong>Phone : </strong> {{ agent.phone }}</p>
+                <p><strong>Email : </strong> {{ agent.email }}</p>
+                <p><strong>Status : </strong> {{ agent.status }}</p>
+                <p><strong>Current Order ID : </strong> {{ agent.currentOrderID || 'None' }}</p>
+                <p><strong>Total Earnings : </strong> ₹{{ agent.totalEarning }}</p>
+            </div>
+        </div>
+                
+        <div class="col-md-6">
+            <div class="card p-3 shadow-sm h-100">  
+                <h5 class="mb-3">🚚 Current Delivery</h5>
+                <div *ngIf="currentOrder; else noOrder">
+                    <p><strong>Order ID : </strong> {{ currentOrder.orderID }}</p>                                    
+                    <p><strong>Drop : </strong> {{ currentOrder.dropAddress || '—' }}</p>
+                    <p><strong>Total : </strong> ₹{{ currentOrder.totalAmount }}</p>
+                    <p><strong>Status : </strong> {{ currentOrder.status }}</p>
+                    <button class="btn btn-sm btn-success mt-2" (click)="markAsDelivered(currentOrder)" *ngIf="currentOrder"> Mark as Delivered </button>
+                                        
+                    <div *ngIf="deliveryConfirmed"
+                        class="mt-4 text-success delivery-success-animation">
+                                                <i class="bi bi-check-circle-fill success-icon"></i>
+                        <h4 class="mt-2">**Order Delivered!**</h4>
+                        <p>Agent {{ agent.name }} is now **AVAILABLE**.</p>
+                    </div>
+                </div>
+                <ng-template #noOrder>                
+                    <p class="text-muted">{{ currentOrderMessage || 'No active delivery assigned.'
+                        }}
+                    </p>      
+                </ng-template>          
+            </div>      
+        </div>
+    </div>
+        
+    <div class="row text-center">
+        <div class="col-md-4 stat-box">💰 Today’s Earnings: ₹{{ agent.todayEarning }}</div>
+        <div class="col-md-4 stat-box">📦 Deliveries Done: {{ agent.totalDeliveries }}</div>
+        <div class="col-md-4 stat-box">⭐ Rating: {{ agent.rating }}</div>
+    </div>
+</div>

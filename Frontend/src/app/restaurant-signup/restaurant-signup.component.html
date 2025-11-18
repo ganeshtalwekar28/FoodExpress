@@ -1,0 +1,111 @@
+<app-navbar></app-navbar>
+
+<body>
+  <div class="login-wrapper">
+    <div class="container" id="container">
+
+      
+      <div class="carousel-container"></div>
+
+      
+      <div class="form-container">
+        <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+          <h4>Create Your Account</h4>
+
+          
+          <div class="form-grid">
+            
+            <div class="form-column">
+              <div class="input-group">
+                <i class="bi bi-shop"></i>
+                <input type="text" formControlName="name"
+                  [placeholder]="submitted && f['name'].errors ? 'Restaurant Name is required' : 'Restaurant Name'"
+                  [class.error]="submitted && f['name'].errors" />
+              </div>
+
+              <div class="input-group">
+                <i class="bi bi-envelope"></i>
+                <input type="email" formControlName="email"
+                  [placeholder]="submitted && f['email'].errors ? 'Enter a valid email address' : 'Email address'"
+                  [class.error]="submitted && f['email'].errors" />
+              </div>
+
+              <div class="input-group">
+                <i class="bi bi-key"></i>
+                <input type="password" formControlName="password"
+                  [placeholder]="submitted && f['password'].errors ? 'Password must be at least 6 characters' : 'Create password'"
+                  [class.error]="submitted && f['password'].errors" />
+              </div>
+
+              <div class="input-group">
+                <i class="bi bi-fork-knife"></i>
+                <input type="text" formControlName="cuisine_type"
+                  [placeholder]="submitted && f['cuisine_type'].errors ? 'Cuisine Type is mandatory' : 'Cuisine Type'"
+                  [class.error]="submitted && f['cuisine_type'].errors" />
+              </div>
+
+            </div>
+
+            
+            <div class="form-column">
+
+              <div class="input-group">
+                <i class="bi bi-person"></i>
+                <input type="text" formControlName="owner_name"
+                  [placeholder]="submitted && f['owner_name'].errors ? 'Owner Name is required' : 'Owner Name'"
+                  [class.error]="submitted && f['owner_name'].errors" />
+              </div>
+
+              <div class="input-group">
+                <i class="bi bi-telephone"></i>
+                <input type="number" formControlName="phone"
+                  [placeholder]="submitted && f['phone'].errors ? 'Enter a valid 10-digit phone number' : 'Phone number'"
+                  [class.error]="submitted && f['phone'].errors" />
+              </div>
+
+              <div class="input-group">
+                <i class="bi bi-map"></i>
+                <input type="text" formControlName="address"
+                  [placeholder]="submitted && f['address'].errors ? 'Address is mandatory' : 'Full Address'"
+                  [class.error]="submitted && f['address'].errors" />
+              </div>
+
+              <div class="input-group">
+                <i class="bi bi-link-45deg"></i>
+                <input type="text" formControlName="image_url"
+                  [placeholder]="submitted && f['image_url'].errors ? 'Image Url is mandatory' : 'Image URL'"
+                  [class.error]="submitted && f['image_url'].errors" />
+              </div>
+            </div>
+          </div>
+
+          
+          <div class="checkbox-container">
+            <input type="checkbox" formControlName="termsAccepted" />
+            <label style="color: #fff;">I agree to the Terms & Conditions</label>
+          </div>
+
+          
+          <button type="submit" [disabled]="signupForm.invalid">Sign Up</button>
+
+          
+          <div class="form-links">
+            <span style="color: #fff;">Already a Restaurant Owner?</span>
+            <a [routerLink]="['/restaurantLogin']" id="login">Login</a>
+          </div>
+
+          
+          <div *ngIf="message" class="mt-3 text-center">
+            <p [ngClass]="message.includes('successfully') ? 'text-success' : 'text-danger'">{{ message }}</p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="showSnackbar" class="snackbar">
+    {{ snackbarMessage }}
+  </div>
+</body>
+
+<app-footer></app-footer>

@@ -1,0 +1,165 @@
+<app-navbar></app-navbar>
+ 
+<body>
+  <div class="login-wrapper">
+    <div class="container" id="container">
+ 
+      <div class="carousel-container"></div>
+ 
+      <div class="form-container">
+        <form [formGroup]="loginForm" (submit)="loginFormValidation()">
+          <h4>Welcome Back</h4>
+ 
+          <div class="input-field-wrap">
+            <div class="input-group">
+              <i class="bi bi-envelope"></i>
+              <input type="email" formControlName="email"
+                [placeholder]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched ? 'Email Required' : 'Email address'"
+                [class.error]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" />
+            </div>
+            <div *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" class="validation-message">
+              <small class="text-danger" *ngIf="loginForm.get('email')?.errors?.['required']">Email is required.</small>
+              <small class="text-danger" *ngIf="loginForm.get('email')?.errors?.['email']">Enter a valid email
+                address.</small>
+            </div>
+          </div>
+ 
+          <!-- <div class="input-field-wrap">
+            <div class="input-group">
+              <i class="bi bi-key"></i>
+              <input type="password" formControlName="password"
+                [placeholder]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched ? 'Password Required' : 'Password'"
+                [class.error]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" />
+            </div>
+            <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+              class="validation-message">
+              <small class="text-danger" *ngIf="loginForm.get('password')?.errors?.['required']">Password is
+                required.</small>
+              <small class="text-danger" *ngIf="loginForm.get('password')?.errors?.['minlength']">Password must be at
+                least 6 characters.</small>
+            </div>
+          </div> -->
+          <div class="input-field-wrap">
+          <div class="input-group">
+            <i class="bi bi-key"></i>
+            <input
+              [type]="showPassword ? 'text' : 'password'"  
+              formControlName="password"
+              [placeholder]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched ? 'Password Required' : 'Password'"
+              [class.error]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+            />
+ 
+            <!-- Toggle button -->
+            <button type="button" class="toggle-btn" (click)="togglePasswordVisibility()">
+              <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+            </button>
+          </div>
+ 
+          <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+              class="validation-message">
+            <small class="text-danger" *ngIf="loginForm.get('password')?.errors?.['required']">
+              Password is required.
+            </small>
+            <small class="text-danger" *ngIf="loginForm.get('password')?.errors?.['minlength']">
+              Password must be at least 6 characters.
+            </small>
+          </div>
+        </div>
+ 
+ 
+ 
+          <button type="submit" [disabled]="loginForm.invalid" class="login-btn">Log In</button>
+ 
+          <div class="form-links">
+            <a>Forgot Password?</a>
+            <span> | </span>
+            <a routerLink="/signup" id="register">Sign Up</a>
+          </div>
+ 
+         
+ 
+        </form>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="showSnackbar" class="snackbar">
+    {{ snackbarMessage }}
+  </div>
+</body>
+ 
+<app-footer></app-footer>
+
+
+
+
+
+
+
+
+
+
+
+<!-- <app-navbar></app-navbar>
+
+
+<body>
+  <div class="login-wrapper">
+    <div class="container" id="container">
+
+      <div class="carousel-container"></div>
+
+      <div class="form-container">
+        <form [formGroup]="loginForm" (submit)="loginFormValidation()">
+          <h4>Welcome Back</h4>
+
+          <div class="input-field-wrap">
+            <div class="input-group">
+              <i class="bi bi-envelope"></i>
+              <input type="email" formControlName="email"
+                [placeholder]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched ? 'Email Required' : 'Email address'"
+                [class.error]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" />
+            </div>
+            <div *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" class="validation-message">
+              <small class="text-danger" *ngIf="loginForm.get('email')?.errors?.['required']">Email is required.</small>
+              <small class="text-danger" *ngIf="loginForm.get('email')?.errors?.['email']">Enter a valid email
+                address.</small>
+            </div>
+          </div>
+
+          <div class="input-field-wrap">
+            <div class="input-group">
+              <i class="bi bi-key"></i>
+              <input type="password" formControlName="password"
+                [placeholder]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched ? 'Password Required' : 'Password'"
+                [class.error]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" />
+            </div>
+            <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+              class="validation-message">
+              <small class="text-danger" *ngIf="loginForm.get('password')?.errors?.['required']">Password is
+                required.</small>
+              <small class="text-danger" *ngIf="loginForm.get('password')?.errors?.['minlength']">Password must be at
+                least 6 characters.</small>
+            </div>
+          </div>
+
+
+          <button type="submit" [disabled]="loginForm.invalid" class="login-btn">Log In</button>
+
+          <div class="form-links">
+            <a>Forgot Password?</a>
+            <span> | </span>
+            <a routerLink="/signup" id="register">Sign Up</a>
+          </div>
+
+          
+
+        </form>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="showSnackbar" class="snackbar">
+    {{ snackbarMessage }}
+  </div>
+</body>
+
+<app-footer></app-footer> -->

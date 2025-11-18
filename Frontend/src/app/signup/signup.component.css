@@ -1,0 +1,239 @@
+.login-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-image: url('../../../public/customerBG.jpg');
+    font-family: 'Poppins', sans-serif;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.container {
+    display: flex;
+    width: 450px;
+    height: 600px;
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+    border-radius: 20px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    transition: transform 0.6s ease-in-out;
+}
+
+.carousel-container {
+    background-size: cover;
+    background-position: center;
+}
+
+.form-container {
+    width: 100%;
+    padding: 10px 10%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.058)000;
+}
+
+.form-container h4 {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 30px;
+    color: #000000;
+    text-align: center;
+}
+
+.input-field-wrap {
+    min-height: 75px; 
+    position: relative;
+    margin-bottom: 5px;
+}
+
+.input-group {
+    position: relative;
+    margin-bottom: 0px;
+}
+
+.input-group i {
+    position: absolute;
+    top: 50%;
+    left: 12px;
+    transform: translateY(-50%);
+    color: #f97316;
+    font-size: 1rem;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px 12px 12px 40px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.input-group input:focus {
+    border-color: #f97316;
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(249, 115, 22, 0.25);
+}
+
+.input-group input.error::placeholder {
+    color: #dc3545;
+    font-weight: 500;
+}
+
+.input-group input.error {
+    border-color: #dc3545 !important;
+}
+
+.validation-message {
+    position: absolute;
+    bottom: 5px;
+    left: 0;
+    width: 100%;
+    font-size: 0.85rem;
+    line-height: 1.2;
+    padding-left: 5px;
+}
+
+.validation-message small {
+    color: #dc3545 !important;
+    font-weight: 500;
+    display: block;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    font-size: 0.95rem;
+}
+
+.checkbox-container input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    background-color: #f97316;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+button:hover:not(:disabled) {
+    background-color: #e06d15;
+    transform: scale(1.01);
+}
+
+.form-links {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 0.95rem;
+}
+
+.form-links a {
+    color: #f97316;
+    text-decoration: none;
+    font-weight: 500;
+    margin: 0 5px;
+    transition: color 0.3s ease;
+}
+
+.form-links a:hover {
+    color: #e06d15;
+}
+
+.container.active {
+    transform: translateX(-100%);
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        width: 90%;
+        height: auto;
+    }
+
+    .carousel-container {
+        height: 200px;
+        width: 100%;
+    }
+
+    .form-container {
+        width: 100%;
+        padding: 30px 20px;
+    }
+    
+    .input-field-wrap {
+        min-height: auto;
+        margin-bottom: 20px;
+    }
+    
+    .validation-message {
+        position: static;
+        margin-top: 5px;
+        padding-left: 0;
+        bottom: auto;
+    }
+}
+
+.snackbar {
+    position: fixed;
+    top: 100px;
+    right: 20px;
+    left: auto;
+    transform: none;
+    background-color: #f97316;
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 24px;
+    font-size: 0.95rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    animation: fadeInOut 3s ease-in-out;
+}
+
+@keyframes fadeInOut {
+    0% {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+
+    10% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    90% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+}

@@ -1,0 +1,189 @@
+<app-navbar></app-navbar>
+
+<div class="page-wrap bg-subtle">
+    <div class="container-main">
+        <div class="col-main">
+            <div class="checkout-header">
+                <a routerLink="/cart" class="back-link">
+                    <i class="bi bi-arrow-left"></i> &nbsp; Back to Cart
+                </a>
+                <h1 class="page-title">Checkout</h1>
+            </div>
+
+            <div class="main-layout">
+                <div class="col-left">
+                    <div class="checkout-card">
+                        <h2 class="card-title-lg">Billing and Delivery Address</h2>
+
+                        <form [formGroup]="billingAddressForm">
+                            <div class="form-row">
+                                <div class="form-group-half">
+                                    <label for="firstName" class="form-label">First name</label>
+                                    <input id="firstName" type="text" formControlName="firstName" class="form-input"
+                                        [class.is-invalid]="billingAddressForm.get('firstName')?.invalid && billingAddressForm.get('firstName')?.touched">
+                                    <div *ngIf="billingAddressForm.get('firstName')?.hasError('required') && billingAddressForm.get('firstName')?.touched"
+                                        class="form-feedback">First name is required.</div>
+                                </div>
+                                <div class="form-group-half">
+                                    <label for="lastName" class="form-label">Last name</label>
+                                    <input id="lastName" type="text" formControlName="lastName" class="form-input"
+                                        [class.is-invalid]="billingAddressForm.get('lastName')?.invalid && billingAddressForm.get('lastName')?.touched">
+                                    <div *ngIf="billingAddressForm.get('lastName')?.hasError('required') && billingAddressForm.get('lastName')?.touched"
+                                        class="form-feedback">Last name is required.</div>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group-half">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input id="email" type="email" formControlName="email" class="form-input"
+                                        [class.is-invalid]="billingAddressForm.get('email')?.invalid && billingAddressForm.get('email')?.touched">
+                                    <div *ngIf="billingAddressForm.get('email')?.hasError('required') && billingAddressForm.get('email')?.touched"
+                                        class="form-feedback">Email is required.</div>
+                                    <div *ngIf="billingAddressForm.get('email')?.hasError('email') && billingAddressForm.get('email')?.touched"
+                                        class="form-feedback">Enter a valid email address.</div>
+                                </div>
+                                <div class="form-group-half">
+                                    <label for="phoneNumber" class="form-label">Phone Number</label>
+                                    <input id="phoneNumber" type="tel" formControlName="phoneNumber" class="form-input"
+                                        [class.is-invalid]="billingAddressForm.get('phoneNumber')?.invalid && billingAddressForm.get('phoneNumber')?.touched">
+                                    <div *ngIf="billingAddressForm.get('phoneNumber')?.hasError('required') && billingAddressForm.get('phoneNumber')?.touched"
+                                        class="form-feedback">Phone number is required.</div>
+                                    <div *ngIf="billingAddressForm.get('phoneNumber')?.hasError('pattern') && billingAddressForm.get('phoneNumber')?.touched"
+                                        class="form-feedback">Enter a 10-digit number.</div>
+                                </div>
+                            </div>
+
+                            <div class="form-group-full">
+                                <label for="address" class="form-label">Address Details</label>
+                                <input id="address" type="text" formControlName="address" class="form-input"
+                                    placeholder="Enter your full address"
+                                    [class.is-invalid]="billingAddressForm.get('address')?.invalid && billingAddressForm.get('address')?.touched">
+                                <div *ngIf="billingAddressForm.get('address')?.hasError('required') && billingAddressForm.get('address')?.touched"
+                                    class="form-feedback">Street Address is required.</div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group-third">
+                                    <label for="state" class="form-label">State</label>
+                                    <select id="state" formControlName="state" class="form-input form-select-styled"
+                                        [class.is-invalid]="billingAddressForm.get('state')?.invalid && billingAddressForm.get('state')?.touched">
+                                        <option value="">Choose...</option>
+                                        <option value="AN">Andaman and Nicobar Islands</option>
+                                        <option value="AP">Andhra Pradesh</option>
+                                        <option value="AR">Arunachal Pradesh</option>
+                                        <option value="AS">Assam</option>
+                                        <option value="BR">Bihar</option>
+                                        <option value="CH">Chandigarh</option>
+                                        <option value="CT">Chhattisgarh</option>
+                                        <option value="DN">Dadra and Nagar Haveli and Daman and Diu</option>
+                                        <option value="DL">Delhi</option>
+                                        <option value="GA">Goa</option>
+                                        <option value="GJ">Gujarat</option>
+                                        <option value="HR">Haryana</option>
+                                        <option value="HP">Himachal Pradesh</option>
+                                        <option value="JK">Jammu and Kashmir</option>
+                                        <option value="JH">Jharkhand</option>
+                                        <option value="KA">Karnataka</option>
+                                        <option value="KL">Kerala</option>
+                                        <option value="LA">Ladakh</option>
+                                        <option value="LD">Lakshadweep</option>
+                                        <option value="MP">Madhya Pradesh</option>
+                                        <option value="MH">Maharashtra</option>
+                                        <option value="MN">Manipur</option>
+                                        <option value="ML">Meghalaya</option>
+                                        <option value="MZ">Mizoram</option>
+                                        <option value="NL">Nagaland</option>
+                                        <option value="OD">Odisha</option>
+                                        <option value="PY">Puducherry</option>
+                                        <option value="PB">Punjab</option>
+                                        <option value="RJ">Rajasthan</option>
+                                        <option value="SK">Sikkim</option>
+                                        <option value="TN">Tamil Nadu</option>
+                                        <option value="TS">Telangana</option>
+                                        <option value="TR">Tripura</option>
+                                        <option value="UP">Uttar Pradesh</option>
+                                        <option value="UK">Uttarakhand</option>
+                                        <option value="WB">West Bengal</option>
+                                    </select>
+                                    <div *ngIf="billingAddressForm.get('state')?.hasError('required') && billingAddressForm.get('state')?.touched"
+                                        class="form-feedback">State is required.</div>
+                                </div>
+                                <div class="form-group-third">
+                                    <label for="city" class="form-label">City</label>
+                                    <input id="city" type="text" formControlName="city" class="form-input"
+                                        [class.is-invalid]="billingAddressForm.get('city')?.invalid && billingAddressForm.get('city')?.touched">
+                                    <div *ngIf="billingAddressForm.get('city')?.hasError('required') && billingAddressForm.get('city')?.touched"
+                                        class="form-feedback">City is required.</div>
+                                </div>
+                                <div class="form-group-third">
+                                    <label for="zip" class="form-label">Zip</label>
+                                    <input id="zip" type="text" formControlName="zip" class="form-input"
+                                        [class.is-invalid]="billingAddressForm.get('zip')?.invalid && billingAddressForm.get('zip')?.touched">
+                                    <div *ngIf="billingAddressForm.get('zip')?.hasError('required') && billingAddressForm.get('zip')?.touched"
+                                        class="form-feedback">Zip is required.</div>
+                                    <div *ngIf="billingAddressForm.get('zip')?.hasError('pattern') && billingAddressForm.get('zip')?.touched"
+                                        class="form-feedback">Enter a valid zip code.</div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="col-right">
+                    <div class="summary-card sticky-top-30">
+                        <div class="summary-header">
+                            <h5 class="summary-title"><i class="bi bi-bag"></i> Order Summary</h5>
+                        </div>
+
+                        <div class="cart-items-list-summary">
+                            <div *ngIf="cartDetails && cartDetails.items.length > 0; else emptyCart">
+                                <div *ngFor="let item of cartDetails.items" class="summary-item-line">
+                                    <span class="item-name-summary">{{ item.name }} (Qty: {{ item.quantity }})</span>
+                                    <span class="item-price-summary">₹{{ item.price * item.quantity | number:'1.2-2'
+                                        }}</span>
+                                </div>
+                            </div>
+                            <ng-template #emptyCart>
+                                <p class="text-muted text-center">Your cart is empty.</p>
+                            </ng-template>
+                        </div>
+
+                        <div class="charges-summary">
+                            <div class="summary-line">
+                                <span class="summary-label">Subtotal</span>
+                                <span class="summary-value">₹{{ cartDetails?.totalAmount | number:'1.2-2' }}</span>
+                            </div>
+                            <div class="summary-line">
+                                <span class="summary-label">Delivery Fee</span>
+                                <span class="summary-value-success">₹{{ deliveryFee | number:'1.2-2' }}</span>
+                            </div>
+                            <div class="summary-line">
+                                <span class="summary-label">GST (5%)</span>
+                                <span class="summary-value">₹{{ (cartDetails?.totalAmount * gstPercentage) |
+                                    number:'1.2-2' }}</span>
+                            </div>
+                            <div class="total-line">
+                                <span class="total-label">Total (INR)</span>
+                                <span class="total-value">₹{{ totalAmountWithGST | number:'1.2-2' }}</span>
+                            </div>
+                        </div>
+
+                        <button class="pay-button" (click)="onPlaceOrder()" [disabled]="billingAddressForm.invalid">
+                            <i class="bi bi-wallet2"></i> Pay Now ₹{{ totalAmountWithGST | number:'1.2-2' }}
+                        </button>
+
+                        <div class="secure-info">
+                            <i class="bi bi-lock"></i>
+                            <span>Secured by your preferred Payment Gateway</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<app-footer></app-footer>

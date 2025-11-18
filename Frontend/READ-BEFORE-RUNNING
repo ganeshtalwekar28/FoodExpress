@@ -1,0 +1,8 @@
+
+customer project :     ng serve -p 4200
+
+admin project :     ng serve -p 4300
+
+restaurant project :     ng serve -p 4400
+
+json-server: npx json-server --watch db.json (default port 3000)

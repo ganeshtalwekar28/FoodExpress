@@ -1,0 +1,25 @@
+<nav class="admin-header navbar foodie-bg text-white py-3 px-4">
+    <div class="d-flex justify-content-between align-items-center flex-wrap w-100">
+
+        
+        <div class="d-flex align-items-center gap-3">
+            <div>
+                <h4 class="mb-0 fw-bold">FoodExpress</h4>
+                <small class="text-light">Restaurant Dashboard</small>
+            </div>
+        </div>
+
+        
+        <div class="d-flex gap-4 flex-wrap">
+            <a routerLink="/restaurantDashboard" routerLinkActive="active" class="nav-link text-white">Dashboard</a>
+        </div>
+
+        
+        <div class="d-flex align-items-center gap-3">
+            <span class="text-light fw-semibold" style="font-size: 18px;"><b>Welcome</b></span>
+            
+            <button (click)="restaurantLogout()" class="btn btn-outline-light btn-sm">Logout</button>
+        </div>
+
+    </div>
+</nav>

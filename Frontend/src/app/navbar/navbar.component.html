@@ -1,0 +1,97 @@
+<nav class="navbar">
+  <div class="navbar-box">
+    
+    <div class="logo-container">
+      <div class="logo-icon">
+        <a class="icon-placeholder" [routerLink]="['/home']">
+          <img src="logo.jpg" alt="FoodExpress Logo" class="logo-image" width="60" height="60"
+            style="height: 60px; width: 60px; border-radius: 40px;" />
+        </a>
+      </div>
+      <div class="logo-text">
+        <h1>FoodExpress</h1>
+        <p>Delivering Happiness</p>
+      </div>
+
+      
+      <div class="location-container desktop-only-item" (click)="toggleLocationDropdown()">
+        <i class="bi bi-geo-alt location-icon"></i>
+        <div class="location-text">
+          <p class="deliver-to">Deliver to</p>
+          <p class="current-location">{{ currentCity }}</p>
+        </div>
+        
+        <i class="bi bi-chevron-down location-dropdown-icon"
+          [style.transform]="showLocationDropdown ? 'rotate(180deg)' : 'rotate(0deg)'"></i>
+
+        
+        <div class="location-dropdown" *ngIf="showLocationDropdown">
+          <ul class="list-group">
+            <li
+              *ngFor="let city of majorCities"
+              class="list-group-item"
+              [class.active]="city === currentCity"
+              (click)="$event.stopPropagation(); selectCity(city)"
+            >
+              {{ city }}
+              <i *ngIf="city === currentCity" class="bi bi-check text-primary-main"></i>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      
+      <div class="search-bar-container desktop-only-item position-relative">
+        <div class="search-wrapper">
+          <i class="bi bi-search search-icon"></i>
+          <input
+            type="text"
+            placeholder="Search for dishes, restaurants..."
+            [(ngModel)]="searchQuery"
+            (ngModelChange)="onSearchChange($event)"
+          />
+        </div>
+
+        
+        <div class="search-dropdown" *ngIf="showDropdown">
+          <ul class="list-group">
+            <li
+              *ngFor="let item of searchResults"
+              class="list-group-item list-group-item-action"
+              (click)="onSelectItem(item)"
+            >
+              {{ item.name }} - ₹{{ item.price }}
+            </li>
+            <li *ngIf="searchResults.length === 0" class="list-group-item text-muted">
+              No such item
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      
+      <div class="nav-links desktop-only-item">
+        <a *ngFor="let link of navLinks" [routerLink]="link.href" routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }">
+          {{ link.label }}
+        </a>
+      </div>
+
+      
+      <div class="action-buttons">
+        
+        <a (click)="onCartClick()" class="btn-ghost-icon position-relative">
+          <i class="bi bi-cart fs-5"></i>
+          <span *ngIf="cartItemCount > 0" class="cart-badge">
+            {{ cartItemCount }}
+          </span>
+        </a>
+      </div>
+
+      
+      <a (click)="onProfileClick()" class="btn-ghost-icon">
+        <i class="bi bi-person"></i>
+      </a>
+    </div>
+  </div>
+</nav>

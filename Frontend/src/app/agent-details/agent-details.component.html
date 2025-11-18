@@ -1,0 +1,41 @@
+<app-admin-header></app-admin-header>
+
+<div class="container mt-4 mb-5">
+    <h3 class="fw-bold mb-4">👥 Delivery Agents</h3>
+
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+        <div class="col" *ngFor="let agent of agents">
+            <div class="card profile-card h-100 shadow-sm border-0" (click)="viewAgent(agent.id)"
+                style="cursor: pointer;">
+                <div class="card-body text-center">
+                    
+                    <img [src]="'https://ui-avatars.com/api/?name=' + agent.name + '&background=random&color=fff'"
+                        alt="Avatar" class="rounded-circle mb-3" width="60" height="60">
+
+                    
+                    <h5 class="card-title">{{ agent.name }}</h5>
+                    <p class="text-muted">{{ agent.agentID }}</p>
+                    <p><strong>Phone : </strong> {{ agent.phone || '—' }}</p>
+
+                    
+                    <p>
+                        <strong>Status : </strong>
+                        <span class="badge" [ngClass]="{
+                            'bg-info': agent.status.toLowerCase() === 'available',
+                            'bg-danger': agent.status.toLowerCase() === 'busy'
+                        }">{{ agent.status }}</span>
+                    </p>
+                    <hr>
+
+                    
+                    <p><strong>Current Order : </strong> {{ agent.currentOrderID || 'None' }}</p>
+                    <p><strong>Today’s Earnings : </strong> ₹{{ agent.todayEarning || 0 }}</p>
+                    <p><strong>Total Deliveries : </strong> {{ agent.totalDeliveries || 0 }}</p>
+                    <p><strong>Rating : </strong> ⭐ {{ agent.rating || '—' }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<app-admin-footer></app-admin-footer>

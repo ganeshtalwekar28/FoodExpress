@@ -1,0 +1,185 @@
+<app-navbar></app-navbar>
+
+<div class="page-wrap bg-subtle">
+  <div class="container-main py-4">
+
+    <div class="checkout-header">
+      <a routerLink="/" class="back-link">
+        <i class="bi bi-arrow-left"></i> &nbsp; Back to Home
+      </a>
+      <h1 class="page-title">My Profile</h1>
+    </div>
+
+    <div class="main-layout-profile">
+      <div class="col-left-profile mb-4 mb-lg-0">
+        <div class="profile-card sticky-top-30">
+          <div class="profile-header text-center">
+            <div class="avatar-wrap mx-auto mb-3">
+              <i class="bi bi-person-circle display-4 text-primary-light"></i>
+            </div>
+
+            <h5 class="fw-bold text-dark">{{ currentUser.name }}</h5>
+            <p class="text-muted small mb-1"><i class="bi bi-envelope me-1"></i> {{ currentUser.email }}</p>
+            <p class="text-muted small"><i class="bi bi-telephone me-1"></i> {{ currentUser.phone }}</p>
+          </div>
+
+          <hr class="my-3" />
+
+          <div class="nav-group">
+            <button class="nav-btn" [class.active]="activeTab === 'profile'" (click)="activeTab = 'profile'">
+              <i class="bi bi-person-vcard me-2"></i> Account Details
+            </button>
+
+            <button class="nav-btn" [class.active]="activeTab === 'orders'" (click)="activeTab = 'orders'">
+              <i class="bi bi-bag-check me-2"></i> Orders History
+            </button>
+
+            <button class="nav-btn" [class.active]="activeTab === 'help'" (click)="activeTab = 'help'">
+              <i class="bi bi-question-circle me-2"></i> Help & Support
+            </button>
+          </div>
+
+          <hr class="my-3" />
+
+          <button class="btn-logout" (click)="logout()">
+            <i class="bi bi-box-arrow-right me-2"></i> Logout
+          </button>
+        </div>
+      </div>
+
+      <div class="col-right-profile">
+        <div class="content-card">
+          <ng-container [ngSwitch]="activeTab">
+
+            <div *ngSwitchCase="'profile'">
+              <h4 class="card-title-lg mb-4"><i class="bi bi-info-circle me-2"></i> Account Details</h4>
+              <div class="detail-group">
+                <label class="detail-label">Name:</label>
+                <p class="detail-value">{{ currentUser.name }}</p>
+              </div>
+              <div class="detail-group">
+                <label class="detail-label">Email:</label>
+                <p class="detail-value">{{ currentUser.email }}</p>
+              </div>
+              <div class="detail-group mb-4">
+                <label class="detail-label">Phone:</label>
+                <p class="detail-value">{{ currentUser.phone }}</p>
+              </div>
+
+              <button class="btn-primary-main" (click)="activeTab = 'edit'">
+                <i class="bi bi-pencil me-2"></i> Update Profile
+              </button>
+            </div>
+
+
+            <div *ngSwitchCase="'orders'">
+              <h4 class="card-title-lg mb-4"><i class="bi bi-bag-check me-2"></i> Your Order History</h4>
+
+              <div *ngIf="orders.length === 0" class="text-muted text-center py-5">
+                <i class="bi bi-cup-hot display-4 d-block mb-3"></i>
+                You haven’t placed any orders yet. Start exploring the menu!
+              </div>
+
+              <div *ngFor="let order of orders" class="order-item-card mb-4">
+                <div class="order-header">
+                  <h5 class="order-restaurant-name">{{ order.restaurantName }}</h5>
+                  <span class="status-badge" [ngClass]="{
+                                        'status-warning': order.status === 'placed' || order.status === 'Placed' || order.status === 'PLACED',
+                                        'status-primary': order.status === 'out for delivery' || order.status === 'Out For Delivery' || order.status === 'OUT FOR DELIVERY',
+                                        'status-success': order.status === 'delivered' || order.status === 'Delivered' || order.status === 'DELIVERED',
+                                        'status-danger': order.status === 'cancelled' || order.status === 'Cancelled'
+                                    }">
+                    {{ order.status | titlecase }}
+                  </span>
+                </div>
+
+                <p class="order-id-date">
+                  <i class="bi bi-receipt me-1"></i>#{{ order.razorpayOrderId | uppercase}} | {{ order.orderDate |date:'MMM d, h:mm
+                  a'}}
+                </p>
+
+                <div class="order-items-list">
+                  <div *ngFor="let item of order.items" class="order-food-item">
+                    <img [src]="item.image_url" alt="{{ item.name }}" class="order-item-img me-3" />
+                    <div class="item-details-flex">
+                      <div class="fw-bold">{{ item.name }}</div>
+                      <div class="text-muted small">Qty: {{ item.quantity }} x ₹{{ item.price | number:'1.2-2' }}</div>
+                    </div>
+                  </div>
+                </div>
+
+
+                <div class="order-footer">
+                  <div class="total-line-order">
+                    <strong class="total-label-order">Total Paid:</strong>
+                    <strong class="total-value-order">₹{{ order.totalAmount | number:'1.2-2' }}</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+            <div *ngSwitchCase="'edit'">
+              <h4 class="card-title-lg mb-4"><i class="bi bi-pencil-square me-2"></i> Update Profile</h4>
+              <form #editForm="ngForm" (ngSubmit)="onUpdateCustomer()">
+
+                <div class="form-row">
+                  <div class="form-group-half">
+                    <label for="name" class="form-label">Name</label>
+                    <input type="text" id="name" class="form-input" [(ngModel)]="currentUser.name" name="name"
+                      required />
+                  </div>
+                  <div class="form-group-half">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" id="email" class="form-input" [(ngModel)]="currentUser.email" name="email"
+                      required />
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group-half">
+                    <label for="phone" class="form-label">Phone</label>
+                    <input type="text" id="phone" class="form-input" [(ngModel)]="currentUser.phone" name="phone"
+                      required />
+                  </div>
+                  <div class="form-group-half">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" id="password" class="form-input" [(ngModel)]="currentUser.password"
+                      name="password" required />
+                  </div>
+                </div>
+
+                <button type="submit" class="btn-primary-main mt-3" [disabled]="editForm.invalid">
+                  <i class="bi bi-check-circle me-2"></i> Save Changes
+                </button>
+              </form>
+            </div>
+
+
+            <div *ngSwitchCase="'help'">
+              <h4 class="card-title-lg mb-4"><i class="bi bi-headset me-2"></i> Help & Support (FAQ)</h4>
+              <div class="accordion accordion-flush" id="faqAccordion">
+                <div class="accordion-item mb-3 profile-accordion-item" *ngFor="let faq of faqs; let i = index">
+                  <h2 class="accordion-header" [id]="'heading' + i">
+                    <button class="accordion-button collapsed profile-accordion-btn" type="button"
+                      data-bs-toggle="collapse" [attr.data-bs-target]="'#collapse' + i" aria-expanded="false"
+                      [attr.aria-controls]="'collapse' + i">
+                      <i [class]="faq.icon + ' me-2 text-primary-main'"></i> {{ faq.question }}
+                    </button>
+                  </h2>
+                  <div [id]="'collapse' + i" class="accordion-collapse collapse" [attr.aria-labelledby]="'heading' + i"
+                    data-bs-parent="#faqAccordion">
+                    <div class="accordion-body profile-accordion-body">{{ faq.answer }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-footer></app-footer>
